@@ -6,6 +6,7 @@ public class Pistol : Weapon
 {
     public override void Shoot(Transform shootPoint, Player player)
     {
-        Instantiate(Bullet, transform.position, Quaternion.identity);
+        Bullet bullet = Instantiate(Bullet, transform.position, Quaternion.identity);
+        bullet.Init(player);
     }
 }

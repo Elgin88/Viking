@@ -9,4 +9,5 @@ public abstract class Weapon : MonoBehaviour
     public Bullet Bullet => _bullet;
 
     public abstract void Shoot(Transform shootPoint, Player player);
+    
 }

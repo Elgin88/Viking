@@ -22,18 +22,6 @@ public class Player : MonoBehaviour
         _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    private void Update()
-    {
-        if (_isTurnRight == true)
-        {
-            _spriteRenderer.flipX = false;
-        }
-        else
-        {
-            _spriteRenderer.flipX = true;
-        }
-    }
-
     public void ApplyDamage(int damage)
     {
         _curretnHealth -= damage;
@@ -49,11 +37,13 @@ public class Player : MonoBehaviour
     public void TurnLeft()
     {
         _isTurnRight = false;
+        _spriteRenderer.flipX = true;
     }
 
     public void TurnRight()
     {
         _isTurnRight = true;
+        _spriteRenderer.flipX = false;
     }
 
     public void SetPosition(float positionX,float positionY)
