@@ -15,17 +15,24 @@ public class Mover : MonoBehaviour
     [SerializeField] private Transform _rightLimit;
 
     private Vector2 _currentDirection;
+
     private Coroutine _setMoveCommandWork;
     private Coroutine _moveWork;
     private Animator _animator;
     private Player _player;
+
     private string _animationRunWithGun = "RunGun";
     private string _animationIdle = "Idle";
     private string _currentAnimation;
+
     private float _speedConversionFactor = 0.70709f;
     private float _verticalConstraint;
     private float _currentSpeed;
-    
+
+    private KeyCode _moveUp = KeyCode.W;
+    private KeyCode _moveDown = KeyCode.S;
+    private KeyCode _moveRight = KeyCode.D;
+    private KeyCode _moveLeft = KeyCode.A;
 
     private void Start()
     {
@@ -53,55 +60,55 @@ public class Mover : MonoBehaviour
     {
         while (true)
         {
-            if (Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.W))
+            if (Input.GetKey(_moveRight) && Input.GetKey(_moveUp))
             {
                 _currentSpeed = _maxSpeed;
                 _currentAnimation = _animationRunWithGun;
                 _player.TurnRight();
                 _currentDirection = (Vector2.up + Vector2.right) * _speedConversionFactor;                
             }
-            else if (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.W))
+            else if (Input.GetKey(_moveLeft) && Input.GetKey(_moveUp))
             {
                 _currentSpeed = _maxSpeed;
                 _currentAnimation = _animationRunWithGun;
                 _player.TurnLeft();
                 _currentDirection = (Vector2.up + Vector2.left) * _speedConversionFactor;               
             }
-            else if (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.S))
+            else if (Input.GetKey(_moveLeft) && Input.GetKey(_moveDown))
             {
                 _currentSpeed = _maxSpeed;
                 _currentAnimation = _animationRunWithGun;
                 _player.TurnLeft();
                 _currentDirection = (Vector2.down + Vector2.left) * _speedConversionFactor;                
             }
-            else if (Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.D))
+            else if (Input.GetKey(_moveDown) && Input.GetKey(_moveRight))
             {
                 _currentSpeed = _maxSpeed;
                 _currentAnimation = _animationRunWithGun;
                 _player.TurnRight();
                 _currentDirection = (Vector2.down + Vector2.right) * _speedConversionFactor;                
             }
-            else if (Input.GetKey(KeyCode.D))
+            else if (Input.GetKey(_moveRight))
             {
                 _currentSpeed = _maxSpeed;
                 _currentAnimation = _animationRunWithGun;
                 _player.TurnRight();
                 _currentDirection = Vector2.right;
             }
-            else if (Input.GetKey(KeyCode.A))
+            else if (Input.GetKey(_moveLeft))
             {
                 _currentSpeed = _maxSpeed;
                 _currentAnimation = _animationRunWithGun;
                 _player.TurnLeft();
                 _currentDirection = Vector2.left;
             }
-            else if (Input.GetKey(KeyCode.W))
+            else if (Input.GetKey(_moveUp))
             {
                 _currentSpeed = _maxSpeed;
                 _currentAnimation = _animationRunWithGun;
                 _currentDirection = Vector2.up;
             }
-            else if (Input.GetKey(KeyCode.S))
+            else if (Input.GetKey(_moveDown))
             {
                 _currentSpeed = _maxSpeed;
                 _currentAnimation = _animationRunWithGun;

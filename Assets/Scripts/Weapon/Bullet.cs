@@ -11,7 +11,9 @@ public class Bullet : MonoBehaviour
 
     private SpriteRenderer _spriteRenderer;
     private Player _player;
+
     private int _direction = 1;
+    private bool _isTurnRight = true;
 
     private void Start()
     {
@@ -20,17 +22,35 @@ public class Bullet : MonoBehaviour
 
     private void Update()
     {
-        if (_player.IsTurnRight == false)
+        if (_isTurnRight == false)
         {
             _direction = -1;
             _spriteRenderer.flipX = true;
         }
+        else
+        {
+            _direction = 1;
+            _spriteRenderer.flipX = false;
+        }
 
-        transform.Translate(Vector2.right * _speed * _direction * Time.deltaTime, Space.World);
+        transform.Translate(Vector2.right * _speed * _direction * Time.deltaTime, Space.Self);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.TryGetComponent<Destroyer>(out Destroyer destroyer))
+        {
+            Destroy(gameObject);
+        }
     }
 
     public void Init(Player player)
     {
         _player = player;
+    }
+
+    public void SetDirection(bool isTurnRight)
+    {
+        _isTurnRight = isTurnRight;
     }
 }
