@@ -138,7 +138,7 @@ GameObject:
   - component: {fileID: 213274431}
   - component: {fileID: 213274430}
   m_Layer: 0
-  m_Name: Enemy
+  m_Name: Minotaur
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -238,9 +238,9 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 48e93eef0688c4a259cb0eddcd8661f7, type: 3}
-  m_Color: {r: 0.15881987, g: 0.7830189, b: 0.16509072, a: 1}
-  m_FlipX: 0
+  m_Sprite: {fileID: -7744424781442014258, guid: 90d7b0e126057ca45a31e20c10827cab, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 1, y: 1}
@@ -257,7 +257,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 213274429}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.5522821, y: -1.664442, z: 0}
+  m_LocalPosition: {x: 2.42, y: -0.66, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -496,7 +496,7 @@ GameObject:
   - component: {fileID: 556773439}
   - component: {fileID: 556773438}
   m_Layer: 0
-  m_Name: Player (18)
+  m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
