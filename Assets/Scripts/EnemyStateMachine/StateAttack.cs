@@ -6,9 +6,6 @@ public class StateAttack : State
 {
     [SerializeField] private int _damage;
 
-
-
-
     public override IEnumerator RunState()
     {
         while (true)
