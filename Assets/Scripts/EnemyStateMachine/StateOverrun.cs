@@ -1,15 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
+
+[RequireComponent(typeof(Animator))]
 
 public class StateOverrun : State
 {
     [SerializeField] private float _speed;
 
+    private Animator _animator;
     private Coroutine _runStateWork;
+    private string _run = "Walk";
 
     public override IEnumerator RunState()
     {
+        _animator = GetComponent<Animator>();
+        _animator.Play(_run);
+
         while (true)
         {
             if (transform.position.x < Target.transform.position.x)

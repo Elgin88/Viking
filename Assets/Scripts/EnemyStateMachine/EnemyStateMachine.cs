@@ -4,16 +4,19 @@ using UnityEngine;
 
 public class EnemyStateMachine : MonoBehaviour
 {
-    [SerializeField] private Player _target;
     [SerializeField] private State _startState;
 
+    private Transform _startPoint;
+    private Player _target;
     private Coroutine _changeStateWork;
     private State _currentState;
 
     private void Start()
     {
+        _target = GetComponent<Enemy>().Player;
+        _startPoint = GetComponent<Enemy>().StartPoint;
         SetState(_startState);
-        _changeStateWork = StartCoroutine(ChangeState());
+        _changeStateWork = StartCoroutine(ChangeState());        
     }
 
     private IEnumerator ChangeState()
@@ -23,7 +26,7 @@ public class EnemyStateMachine : MonoBehaviour
             if (_currentState == null)
             {
                 yield return null;
-            }
+            }            
 
             State nextState = _currentState.TryGetNextState();
 
@@ -42,7 +45,7 @@ public class EnemyStateMachine : MonoBehaviour
 
         if (_currentState != null)
         {
-            _currentState.Enter(_target);
+            _currentState.Enter(_target, _startPoint);
         }
     }
 
@@ -57,7 +60,7 @@ public class EnemyStateMachine : MonoBehaviour
 
         if (_currentState != null)
         {
-            _currentState.Enter(_target);
+            _currentState.Enter(_target, _startPoint);
         }
     }
 }
