@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Animator))]
-
 public abstract class State : MonoBehaviour
 {
     [SerializeField] private List<Transition> _transitions;
@@ -25,7 +23,6 @@ public abstract class State : MonoBehaviour
         {
             transition.InitTarget(_target);
             transition.InitStartPoint(_startPoint);
-
             transition.StartCheckTransition();
         }
     }

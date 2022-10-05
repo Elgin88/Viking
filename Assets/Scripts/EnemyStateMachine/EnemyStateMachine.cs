@@ -6,16 +6,18 @@ public class EnemyStateMachine : MonoBehaviour
 {
     [SerializeField] private State _startState;
 
-    private Transform _startPoint;
-    private Player _target;
-    private Coroutine _changeStateWork;
     private State _currentState;
+    private Player _target;
+    private Transform _startPoint;
+    private Coroutine _changeStateWork;
 
     private void Start()
     {
         _target = GetComponent<Enemy>().Player;
         _startPoint = GetComponent<Enemy>().StartPoint;
+
         SetState(_startState);
+
         _changeStateWork = StartCoroutine(ChangeState());        
     }
 

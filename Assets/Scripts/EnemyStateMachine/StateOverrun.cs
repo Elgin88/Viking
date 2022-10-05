@@ -11,12 +11,12 @@ public class StateOverrun : State
 
     private Animator _animator;
     private Coroutine _runStateWork;
-    private string _run = "Walk";
+    private string _walk = "Walk";
 
     public override IEnumerator RunState()
     {
         _animator = GetComponent<Animator>();
-        _animator.Play(_run);
+        _animator.Play(_walk);
 
         while (true)
         {

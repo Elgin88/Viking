@@ -19,6 +19,9 @@ GameObject:
   - component: {fileID: 1911424031150777933}
   - component: {fileID: 9040384367152108999}
   - component: {fileID: 3496388322750159878}
+  - component: {fileID: 513754122724700713}
+  - component: {fileID: 1152843518714747229}
+  - component: {fileID: 3358074455900711825}
   m_Layer: 0
   m_Name: Minotaur
   m_TagString: Untagged
@@ -104,7 +107,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.24695587, y: 0.6864593}
+  m_Offset: {x: -0.27509022, y: 0.68020725}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
@@ -115,7 +118,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.45166206, y: 1.4604478}
+  m_Size: {x: 0.8080292, y: 1.3479109}
   m_EdgeRadius: 0
 --- !u!95 &1911424031150777932
 Animator:
@@ -220,7 +223,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _nextStates: {fileID: 3496388322750159878}
-  _distanceRange: 1
+  _distanceRange: 2
   _rangeSpred: 0.2
 --- !u!114 &3496388322750159878
 MonoBehaviour:
@@ -234,5 +237,47 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f54b3801c144c4b8faf43c59e5217af4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _transitions: []
+  _transitions:
+  - {fileID: 513754122724700713}
   _damage: 20
+--- !u!114 &513754122724700713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1911424031150777908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11469d0c987e141ebb0e3927781a59df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _nextStates: {fileID: 1152843518714747229}
+--- !u!114 &1152843518714747229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1911424031150777908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e5aae93d88c84fc28e12240742b1bb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _transitions:
+  - {fileID: 3358074455900711825}
+--- !u!114 &3358074455900711825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1911424031150777908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4645ed69f2e2411aaad9cf987b409e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _nextStates: {fileID: 1911424031150777933}
+  _duration: 1
