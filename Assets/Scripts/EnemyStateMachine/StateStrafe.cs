@@ -6,16 +6,27 @@ public class StateStrafe : State
 {
     [SerializeField] private float _speed;
 
+    private Enemy _enemy;
     private float _speedConversionFactor = 0.70709f;
     private Animator _animator;
     private string _walk = "Walk";
 
-    public override IEnumerator RunState()
+    private void Start()
     {
         _animator = GetComponent<Animator>();
-        
+        _enemy = GetComponent<Enemy>();
+    }
+
+
+    public override IEnumerator RunState()
+    {
         while (true)
         {
+            if (Target == null)
+            {
+                yield return null;
+            }
+
             _animator.Play(_walk);
 
             if (Target.transform.position.x < transform.position.x & Target.transform.position.y > transform.position.y)

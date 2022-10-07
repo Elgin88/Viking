@@ -16,6 +16,11 @@ public class TransitionDistanceStrafe : Transition
     {
         while (true)
         {
+            if (Target == null)
+            {
+                yield return null;
+            }
+
             if (_distanceRange > Vector2.Distance(transform.position, Target.transform.position))
             {
                 NeedTransit = true;

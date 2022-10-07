@@ -22,7 +22,12 @@ public abstract class State : MonoBehaviour
         foreach (var transition in _transitions)
         {
             transition.InitTarget(_target);
-            transition.InitStartPoint(_startPoint);
+
+            if (_startPoint != null)
+            {
+                transition.InitStartPoint(_startPoint);
+            }
+            
             transition.StartCheckTransition();
         }
     }

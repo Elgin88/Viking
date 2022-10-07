@@ -7,49 +7,87 @@ using UnityEngine;
 public abstract class Enemy : MonoBehaviour
 {
     [SerializeField] private int _maxHealth;
+    [SerializeField] private Quaternion _maxQuaternion;
+    [SerializeField] private float _delayDirection;
+
+    private SpriteRenderer _spriteRenderer;
+
+    private List<Vector3> _pastAndPresentPositions;
+
+    private int _currentHealth;
+
+    private Coroutine _setDirectionWork;
+    private Coroutine _blockQuaternionWork;
+
+    private WaitForSeconds _delayBetweenDirection;
 
     public Transform StartPoint { get; private set; }
+
     public Player Player { get; private set; }
-    private SpriteRenderer _spriteRenderer;
-    private List<Vector3> _pastAndPresentPositions;
-    private float _currentHealth;
+
+    public int CurrentHealth => _currentHealth;
 
     private void Start()
     {
         _currentHealth = _maxHealth;
-        _spriteRenderer = GetComponent<SpriteRenderer>();
+
         _pastAndPresentPositions = new List<Vector3>();
+        _delayBetweenDirection = new WaitForSeconds(_delayDirection);
+
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+       
+
         _pastAndPresentPositions.Add(new Vector3 (0,0,0));
+
+        _blockQuaternionWork = StartCoroutine(BlockQuaternion());
+        _setDirectionWork = StartCoroutine(SetDirection());
     }
 
-    private void Update()
+    public IEnumerator SetDirection()
     {
-        _pastAndPresentPositions.Add(transform.position);
+        while (true)
+        {
+            _pastAndPresentPositions.Add(transform.position);
 
-        if (_pastAndPresentPositions.Count > 2)
-        {
-            _pastAndPresentPositions.Remove(_pastAndPresentPositions[0]);           
-        }
+            if (_pastAndPresentPositions.Count > 2)
+            {
+                _pastAndPresentPositions.Remove(_pastAndPresentPositions[0]);
+            }
 
-        if (_pastAndPresentPositions[0].x > _pastAndPresentPositions[1].x)
-        {
-            TurnLeft();
-        }
-        else if (_pastAndPresentPositions[0].x < _pastAndPresentPositions[1].x)
-        {
-            TurnRight();
+            if (_pastAndPresentPositions[0].x > _pastAndPresentPositions[1].x)
+            {
+                TurnLeft();
+                yield return _delayBetweenDirection;
+            }
+            else if (_pastAndPresentPositions[0].x < _pastAndPresentPositions[1].x)
+            {
+                TurnRight();
+                yield return _delayBetweenDirection;
+            }
+
+            yield return null;
         }
     }
+
+    public void StopSetDirection()
+    {
+        StopCoroutine(_setDirectionWork);
+    }
+
+    private IEnumerator BlockQuaternion()
+    {
+        while (true)
+        {
+            transform.rotation = _maxQuaternion;
+
+            yield return null;
+        }
+    }     
 
     public void ApplyDamage(int damage)
     {
         _currentHealth -= damage;
         _currentHealth = Mathf.Clamp(_currentHealth, 0, _maxHealth);
-
-        if (_currentHealth == 0)
-        {
-            Destroy(gameObject);
-        }
     }
 
     public void TurnLeft()
@@ -70,5 +108,11 @@ public abstract class Enemy : MonoBehaviour
     public void InitStartPoint(Transform startPoint)
     {
         StartPoint = startPoint;
+    }
+
+    public void Die()
+    {
+        
+        Destroy(gameObject);
     }
 }

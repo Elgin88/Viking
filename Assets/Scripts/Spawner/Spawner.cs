@@ -13,7 +13,6 @@ public class Spawner : MonoBehaviour
     private Coroutine _instantiateEnemyWork;
     private WaitForSeconds _delayBetweenSpawn;   
 
-
     private void Start()
     {
         _delayBetweenSpawn = new WaitForSeconds(_delay) ;
@@ -26,8 +25,6 @@ public class Spawner : MonoBehaviour
 
         _instantiateEnemyWork = StartCoroutine(InstantiateEnemy());
     }
-
-
 
     private IEnumerator InstantiateEnemy()
     {

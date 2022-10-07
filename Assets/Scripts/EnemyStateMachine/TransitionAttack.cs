@@ -9,18 +9,6 @@ public class TransitionAttack : Transition
 
     public override IEnumerator CheckTransition()
     {
-        _stateAttack = GetComponent<StateAttack>();        
-
-        while (true)
-        {
-            _stateAttack.IsAttack += OnEnemyAttack;
-            yield return null;
-        }
-    }
-
-    private void OnEnemyAttack()
-    {
-        NeedTransit = true;
-        _stateAttack.IsAttack -= OnEnemyAttack;
+        yield return null;
     }
 }

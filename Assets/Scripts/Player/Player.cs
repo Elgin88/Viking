@@ -1,43 +1,77 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
-using static UnityEditor.Experimental.GraphView.GraphView;
+using UnityEngine.Events;
+
+[RequireComponent(typeof(Animator))]
 
 public class Player : MonoBehaviour
 {
     [SerializeField] private int _maxHealth;
-    [SerializeField] private Weapon _weapon;
+    [SerializeField] private List<Weapon> _weapons;
     [SerializeField] private List<Transform> _shootPoints;
+    [SerializeField]private Quaternion _maxQuaterniton;
+    [SerializeField] private float _delayChangeWeapon;
+
+    private Animator _animator;
 
     private WaitForSeconds _delayBetweenBullets;
+    private WaitForSeconds _delayBetweenChangeWeapons;
+
     private SpriteRenderer _spriteRenderer;
+
     private Transform _currentShootPoint;
-    private Coroutine _shootWork;
+
+    private Coroutine _attackWork;
+    private Coroutine _blockQuaternionWork;
+    private Coroutine _changeWeaponWork;
+
+    private Weapon _currentWeapon;
+
+
 
     private bool _isTurnRight;
-    private int _curretnHealth;
+    private bool _isAttacked;
+
+    private int _currentHealth;
+    private int _currentWeaponNumber;
 
     private KeyCode _shoot = KeyCode.K;
+    private KeyCode _changeWeapon = KeyCode.L;
 
     public bool IsTurnRight => _isTurnRight;
+    public bool IsAttacked => _isAttacked;
 
+    public event UnityAction <int, int> ChangedHealth;
+    public event UnityAction ChangedWeapon;
+    public event UnityAction TakedDamage;
+
+    public Weapon CurrentWeapon => _currentWeapon;
     private void Start()
     {
-        _isTurnRight = true;
-        _curretnHealth = _maxHealth;
         _spriteRenderer = GetComponent<SpriteRenderer>();
-        _shootWork = StartCoroutine(Shoot());
-        _delayBetweenBullets = new WaitForSeconds(_weapon.DelayBetweenBullets);
+        _animator = GetComponent<Animator>();
+
+        _isTurnRight = true;
+
+        _currentHealth = _maxHealth;
+        _currentWeapon = _weapons[0];
+
+        _attackWork = StartCoroutine(Attack());
+        _blockQuaternionWork = StartCoroutine(BlockQuaternion());
+        _changeWeaponWork = StartCoroutine(ChangeWeapon());
+
+        _delayBetweenBullets = new WaitForSeconds(_currentWeapon.DelayBetweenBullets);
+        _delayBetweenChangeWeapons = new WaitForSeconds(_delayChangeWeapon);
     }
 
-    private IEnumerator Shoot()
+    private IEnumerator Attack()
     {
         while (true)
         {
             if (Input.GetKey(_shoot))
             {
-                _weapon.Shoot(_currentShootPoint, this);
+                _currentWeapon.Shoot(_currentShootPoint, this);
 
                 yield return _delayBetweenBullets;
             }
@@ -46,16 +80,57 @@ public class Player : MonoBehaviour
         }
     }
 
+    public IEnumerator ChangeWeapon()
+    {
+        while (true)
+        {
+            if (Input.GetKey(_changeWeapon))
+            {
+                _currentWeaponNumber++;
+
+                if (_currentWeaponNumber > _weapons.Count - 1)
+                {
+                    _currentWeaponNumber = 0;
+                }
+
+                ChangedWeapon?.Invoke();
+            }
+
+            yield return _delayBetweenChangeWeapons;
+        }
+    }
+
+
+    private IEnumerator BlockQuaternion()
+    {
+        while (true)
+        {
+            transform.rotation = _maxQuaterniton;         
+
+            yield return null;
+        }
+    }
+
     public void ApplyDamage(int damage)
     {
-        _curretnHealth -= damage;
-        _curretnHealth = Mathf.Clamp(_curretnHealth, 0, _maxHealth);
+        _currentHealth -= damage;
+        _currentHealth = Mathf.Clamp(_currentHealth, 0, _maxHealth);       
+
+        ChangedHealth?.Invoke(_currentHealth, _maxHealth);
+        TakedDamage?.Invoke();
+
+        if (_currentHealth == 0)
+        {
+            Destroy(gameObject);
+        }
     }
 
     public void ApplyHeal(int heal)
     {
-        _curretnHealth += heal;
-        _curretnHealth = Mathf.Clamp(_curretnHealth, 0, _maxHealth);
+        _currentHealth += heal;
+        _currentHealth = Mathf.Clamp(_currentHealth, 0, _maxHealth);
+
+        ChangedHealth?.Invoke(_currentHealth, _maxHealth);
     }
 
     public void TurnLeft()

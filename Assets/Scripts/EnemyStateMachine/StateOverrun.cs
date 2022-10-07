@@ -20,6 +20,11 @@ public class StateOverrun : State
 
         while (true)
         {
+            if (Target == null)
+            {
+                yield return null;
+            }
+
             if (transform.position.x < Target.transform.position.x)
             {
                 transform.Translate(Vector2.right * _speed * Time.deltaTime, Space.World);
