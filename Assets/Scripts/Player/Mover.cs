@@ -195,11 +195,11 @@ public class Mover : MonoBehaviour
 
     public void ChangeWeapon()
     {
-        _changingWeapon = StartCoroutine(ChangindWeapon());
+        _changingWeapon = StartCoroutine(ChangeWeaponCoroutine());
         _player.ChangedWeapon -= ChangeWeapon;        
     }
 
-    private IEnumerator ChangindWeapon()
+    private IEnumerator ChangeWeaponCoroutine()
     {
         float durationChangeWeapon = 0;        
 

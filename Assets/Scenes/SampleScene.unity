@@ -534,7 +534,7 @@ MonoBehaviour:
   - {fileID: 1173086809}
   - {fileID: 1025058355}
   _maxQuaterniton: {x: 0, y: 0, z: 0, w: 0}
-  _delayChangeWeapon: 0.2
+  _delayChangeWeapon: 0.5
 --- !u!212 &556773440
 SpriteRenderer:
   m_ObjectHideFlags: 0
