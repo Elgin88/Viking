@@ -247,6 +247,7 @@ public class Player : MonoBehaviour
 
         _mover.StopCoroutineSetDirection();
         _mover.StopCoroutineMove();
+        StopCoroutine(_changeWeaponWork);
         
         while (true)
         {
@@ -258,6 +259,7 @@ public class Player : MonoBehaviour
             {
                 _mover.StartCorounineSetDirection();
                 _mover.StartCoroutineMove();
+                _changeWeaponWork = StartCoroutine(ChangeWeapon());
 
                 StopCoroutine(_hitWork);
             }
