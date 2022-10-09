@@ -4,65 +4,107 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(Mover))]
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] private int _maxHealth;
-    [SerializeField] private List<Weapon> _weapons;
     [SerializeField] private List<Transform> _shootPoints;
+    [SerializeField] private List<Weapon> _weapons;
     [SerializeField]private Quaternion _maxQuaterniton;
     [SerializeField] private float _delayChangeWeapon;
+    [SerializeField] private float _duretionHit;
+    [SerializeField] private float _duretionChangingWeapon;
+    [SerializeField] private int _maxHealth;
 
-    private Animator _animator;
-
-    private WaitForSeconds _delayBetweenBullets;
     private WaitForSeconds _delayBetweenChangeWeapons;
+    private WaitForSeconds _delayBetweenBullets;
 
     private SpriteRenderer _spriteRenderer;
 
+    private List<Vector3> _pastAndPresentPositions;
+
     private Transform _currentShootPoint;
 
-    private Coroutine _attackWork;
     private Coroutine _blockQuaternionWork;
     private Coroutine _changeWeaponWork;
+    private Coroutine _setDerictionWork;
+    private Coroutine _attackWork;
+    private Coroutine _hitWork;
+
+    private Mover _mover;
+
+    private Animator _animator;
 
     private Weapon _currentWeapon;
 
-
+    private string _changeGunToAxe = "ChangeGunToAxe";
+    private string _animationHitGun = "HitGun";
 
     private bool _isTurnRight;
     private bool _isAttacked;
 
-    private int _currentHealth;
     private int _currentWeaponNumber;
+    private int _currentHealth;
 
-    private KeyCode _shoot = KeyCode.K;
     private KeyCode _changeWeapon = KeyCode.L;
+    private KeyCode _shoot = KeyCode.K;
 
     public bool IsTurnRight => _isTurnRight;
     public bool IsAttacked => _isAttacked;
 
-    public event UnityAction <int, int> ChangedHealth;
-    public event UnityAction ChangedWeapon;
-    public event UnityAction TakedDamage;
-
     public Weapon CurrentWeapon => _currentWeapon;
+
+    public event UnityAction <int, int> ChangedHealth;
+
     private void Start()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _animator = GetComponent<Animator>();
+        _mover = GetComponent<Mover>();
 
         _isTurnRight = true;
 
         _currentHealth = _maxHealth;
         _currentWeapon = _weapons[0];
 
-        _attackWork = StartCoroutine(Attack());
+        _pastAndPresentPositions = new List<Vector3>();
+        _pastAndPresentPositions.Add(new Vector3(0, 0, 0));
+
+        _delayBetweenChangeWeapons = new WaitForSeconds(_delayChangeWeapon);
+        _delayBetweenBullets = new WaitForSeconds(_currentWeapon.DelayBetweenBullets);
+
         _blockQuaternionWork = StartCoroutine(BlockQuaternion());
         _changeWeaponWork = StartCoroutine(ChangeWeapon());
+        _setDerictionWork = StartCoroutine(SetDirection());
+        _attackWork = StartCoroutine(Attack());
 
-        _delayBetweenBullets = new WaitForSeconds(_currentWeapon.DelayBetweenBullets);
-        _delayBetweenChangeWeapons = new WaitForSeconds(_delayChangeWeapon);
+        TurnRight();
+    }
+
+    private IEnumerator SetDirection()
+    {
+        while (true)
+        {
+            _pastAndPresentPositions.Add(new Vector3(transform.position.x, transform.position.y, transform.position.z));
+
+            if (_pastAndPresentPositions.Count > 2)
+            {
+                _pastAndPresentPositions.Remove(_pastAndPresentPositions[0]);
+            }            
+
+            if (_pastAndPresentPositions[0].x < _pastAndPresentPositions[1].x)
+            {
+                TurnRight();
+                _isTurnRight = true;
+            }
+            else if (_pastAndPresentPositions[0].x > _pastAndPresentPositions[1].x)
+            {
+                TurnLeft();
+                _isTurnRight = false;
+            }
+
+            yield return null;
+        }
     }
 
     private IEnumerator Attack()
@@ -82,24 +124,44 @@ public class Player : MonoBehaviour
 
     public IEnumerator ChangeWeapon()
     {
+        float delayChangeWeapon = 0;
+        bool isWeaponChanged = false;
+
         while (true)
         {
+            delayChangeWeapon += Time.deltaTime;
+
             if (Input.GetKey(_changeWeapon))
             {
+                delayChangeWeapon = 0;
+
+                _mover.StopCoroutineMove();
+                _mover.StopCoroutineSetDirection();
+                _animator.Play(_changeGunToAxe);
+
                 _currentWeaponNumber++;
 
-                if (_currentWeaponNumber > _weapons.Count - 1)
+                isWeaponChanged = true;
+
+                if (_currentWeaponNumber == _weapons.Count)
                 {
                     _currentWeaponNumber = 0;
-                }
+                }                
+            }
+            
+            if (delayChangeWeapon > _delayChangeWeapon & isWeaponChanged == true)
+            {
+                StopCoroutine(_changeWeaponWork);
 
-                ChangedWeapon?.Invoke();
+                _mover.StartCorounineSetDirection();
+                _mover.StartCoroutineMove();
+
+                _changeWeaponWork = StartCoroutine(ChangeWeapon());
             }
 
-            yield return _delayBetweenChangeWeapons;
+            yield return null;
         }
     }
-
 
     private IEnumerator BlockQuaternion()
     {
@@ -117,7 +179,8 @@ public class Player : MonoBehaviour
         _currentHealth = Mathf.Clamp(_currentHealth, 0, _maxHealth);       
 
         ChangedHealth?.Invoke(_currentHealth, _maxHealth);
-        TakedDamage?.Invoke();
+
+        TakeHit();
 
         if (_currentHealth == 0)
         {
@@ -172,4 +235,58 @@ public class Player : MonoBehaviour
     {
         return _isTurnRight;
     }
+
+    private void TakeHit()
+    {
+        _hitWork = StartCoroutine(Hit());        
+    }
+
+    private IEnumerator Hit()
+    {
+        float durationHit = 0;
+
+        _mover.StopCoroutineSetDirection();
+        _mover.StopCoroutineMove();
+        
+        while (true)
+        {
+            durationHit += Time.deltaTime;
+
+            _animator.Play(_animationHitGun);
+
+            if (durationHit > _duretionHit)
+            {
+                _mover.StartCorounineSetDirection();
+                _mover.StartCoroutineMove();
+
+                StopCoroutine(_hitWork);
+            }
+
+            yield return null;
+        }
+    }
+
+    private IEnumerator ChangeWeaponCoroutine()
+    {
+        float durationChangeWeapon = 0;
+
+        while (true)
+        {
+            durationChangeWeapon += Time.deltaTime;
+
+            if (_currentWeapon.TryGetComponent<Pistol>(out Pistol pistol))
+            {
+                _animator.Play(_changeGunToAxe);
+
+                if (durationChangeWeapon > _duretionChangingWeapon)
+                {
+    
+                }
+            }
+
+            yield return null;
+        }
+    }
+
+
 }
