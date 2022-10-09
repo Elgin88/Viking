@@ -4,12 +4,11 @@ using UnityEngine;
 
 public abstract class Weapon : MonoBehaviour
 {
-    [SerializeField] private Bullet _bullet;
-    [SerializeField] private float _delayBetweenBullets;
+    [SerializeField] private int _damage;
+    [SerializeField] private float _delayBetweenAttacks;
 
-    public Bullet Bullet => _bullet;
-
-    public float DelayBetweenBullets => _delayBetweenBullets;
+    public int Damage => _damage;
+    public float DelayBetweenAttacks => _delayBetweenAttacks;
 
     public abstract void Shoot(Transform shootPoint, Player player);
     

@@ -45,21 +45,19 @@ public class Mover : MonoBehaviour
         StartCoroutineMove(); 
     }
 
-    private void Update()
-    {
-        if (_currentSpeed <= 0.1f)
-        {
-            _currentSpeed = 0;
-            _currentAnimation = _animationIdle;
-        }
-
-        _currentSpeed = Mathf.Lerp(_currentSpeed , 0, _slowdown * Time.deltaTime);        
-    }
-
-    private IEnumerator SetDirection()
+    private IEnumerator Move()
     {
         while (true)
         {
+            _animator.Play(_currentAnimation);
+            _currentSpeed = Mathf.Lerp(_currentSpeed, 0, _slowdown * Time.deltaTime);
+
+            if (_currentSpeed <= 0.1f)
+            {
+                _currentSpeed = 0;
+                _currentAnimation = _animationIdle;
+            }
+
             if (Input.GetKey(_moveRight) && Input.GetKey(_moveUp))
             {
                 _currentAnimation = _animationRunWithGun;
@@ -109,13 +107,15 @@ public class Mover : MonoBehaviour
                 _currentDirection = Vector2.down;
             }
 
+            transform.Translate(_currentDirection * _currentSpeed * Time.deltaTime, Space.World);
+
             yield return null;
         }
     }
 
     public void StartCorounineSetDirection()
     {
-        _setMoveCommand = StartCoroutine(SetDirection());
+        _setMoveCommand = StartCoroutine(Move());
     }
 
     public void StopCoroutineSetDirection()
@@ -123,12 +123,10 @@ public class Mover : MonoBehaviour
         StopCoroutine(_setMoveCommand);
     }
 
-    private IEnumerator Move()
+    private IEnumerator RestrictMove()
     {
         while (true)
         {
-            _animator.Play(_currentAnimation);
-
             if (_player.transform.position.y > _upLimit.position.y)
             {
                 _player.SetPosition(_player.transform.position.x, _upLimit.position.y);
@@ -144,9 +142,7 @@ public class Mover : MonoBehaviour
             else if (_player.transform.position.x > _rightLimit.position.x)
             {
                 _player.SetPosition(_rightLimit.position.x, transform.position.y);
-            }
-
-            transform.Translate(_currentDirection * _currentSpeed * Time.deltaTime, Space.World);
+            }            
 
             yield return null;
         }
@@ -154,7 +150,7 @@ public class Mover : MonoBehaviour
 
     public void StartCoroutineMove()
     {
-        _move = StartCoroutine(Move());
+        _move = StartCoroutine(RestrictMove());
     }
 
     public void StopCoroutineMove()

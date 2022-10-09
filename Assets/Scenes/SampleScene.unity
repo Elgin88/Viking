@@ -529,7 +529,7 @@ MonoBehaviour:
   - {fileID: 1025058355}
   _weapons:
   - {fileID: 9127081209541054439, guid: dd542edf6e3834676a9a5257221a29a3, type: 3}
-  - {fileID: 9127081209541054439, guid: dd542edf6e3834676a9a5257221a29a3, type: 3}
+  - {fileID: -108653762800851078, guid: 5ce2793dbb1da3c45a79167847418e7d, type: 3}
   _maxQuaterniton: {x: 0, y: 0, z: 0, w: 0}
   _delayChangeWeapon: 0.5
   _duretionHit: 0.3

@@ -30,6 +30,7 @@ public class Player : MonoBehaviour
     private Coroutine _setDerictionWork;
     private Coroutine _attackWork;
     private Coroutine _hitWork;
+    private Coroutine _playAnimationIdle;
 
     private Mover _mover;
 
@@ -39,6 +40,8 @@ public class Player : MonoBehaviour
 
     private string _changeGunToAxe = "ChangeGunToAxe";
     private string _animationHitGun = "HitGun";
+    private string _idleGun = "IdleGun";
+    private string _idleAxe = "IdleAxe";
 
     private bool _isTurnRight;
     private bool _isAttacked;
@@ -71,14 +74,35 @@ public class Player : MonoBehaviour
         _pastAndPresentPositions.Add(new Vector3(0, 0, 0));
 
         _delayBetweenChangeWeapons = new WaitForSeconds(_delayChangeWeapon);
-        _delayBetweenBullets = new WaitForSeconds(_currentWeapon.DelayBetweenBullets);
+        _delayBetweenBullets = new WaitForSeconds(_currentWeapon.DelayBetweenAttacks);
 
         _blockQuaternionWork = StartCoroutine(BlockQuaternion());
         _changeWeaponWork = StartCoroutine(ChangeWeapon());
         _setDerictionWork = StartCoroutine(SetDirection());
         _attackWork = StartCoroutine(Attack());
+        _playAnimationIdle = StartCoroutine(PlayAnimationEdle());
 
         TurnRight();
+    }
+
+    private IEnumerator PlayAnimationEdle()
+    {
+        while (true)
+        {
+            if (_currentWeapon.TryGetComponent<Pistol>(out Pistol pistol))
+            {
+                _animator.Play(_idleGun);
+                Debug.Log("Gun");
+            }
+            else if (_currentWeapon.TryGetComponent<Axe> (out Axe axe))
+            {
+                _animator.Play(_idleAxe);
+                Debug.Log("Axe");
+            }
+
+            yield return null;
+        }
+
     }
 
     private IEnumerator SetDirection()
