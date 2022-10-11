@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,16 +17,21 @@ public class Mover : MonoBehaviour
 
     private Vector2 _currentDirection;
 
-    private Coroutine _setMoveCommand;
-    private Coroutine _move;   
+    private Coroutine _restrictMoveWork;
+    private Coroutine _playAnimationWork;
+    private Coroutine _mover;   
 
     private Animator _animator;
 
     private Player _player;
 
-    private string _animationRunWithGun = "RunGun"; 
-    private string _animationIdle = "Idle";
+    private string _runWithGun = "RunGun";
+    private string _runWithAxe = "RunAxe";
+    private string _idleGun = "IdleGun";
+    private string _idleAxe = "IdleAxe";
     private string _currentAnimation;
+    private string _currentIdle;
+    private string _currentRun;
 
     private float _speedConversionFactor = 0.70709f;
     private float _verticalConstraint;
@@ -34,93 +40,92 @@ public class Mover : MonoBehaviour
     private KeyCode _moveUp = KeyCode.W;
     private KeyCode _moveDown = KeyCode.S;
     private KeyCode _moveRight = KeyCode.D;
-    private KeyCode _moveLeft = KeyCode.A;
+    private KeyCode _moveLeft = KeyCode.A;    
 
     private void Start()
     {
-        _player = GetComponent<Player>();
         _animator = GetComponent<Animator>();
+        _player = GetComponent<Player>();
 
-        StartCorounineSetDirection();
-        StartCoroutineMove(); 
+        _mover = StartCoroutine(Move());
+        _restrictMoveWork = StartCoroutine(RestrictMove());
+    }
+
+    public void StartCoroutineMover()
+    {
+        _mover = StartCoroutine(Move());
+    }
+
+    public void StopCoroutineMove()
+    {
+        StopCoroutine(_mover);
     }
 
     private IEnumerator Move()
     {
         while (true)
         {
-            _animator.Play(_currentAnimation);
-            _currentSpeed = Mathf.Lerp(_currentSpeed, 0, _slowdown * Time.deltaTime);
-
-            if (_currentSpeed <= 0.1f)
-            {
-                _currentSpeed = 0;
-                _currentAnimation = _animationIdle;
-            }
-
             if (Input.GetKey(_moveRight) && Input.GetKey(_moveUp))
             {
-                _currentAnimation = _animationRunWithGun;
+                _currentAnimation = _currentRun;
                 _currentSpeed = _maxSpeed;               
                 _currentDirection = (Vector2.up + Vector2.right) * _speedConversionFactor;                
             }
             else if (Input.GetKey(_moveLeft) && Input.GetKey(_moveUp))
             {
-                _currentAnimation = _animationRunWithGun;
+                _currentAnimation = _currentRun;
                 _currentSpeed = _maxSpeed;                
                 _currentDirection = (Vector2.up + Vector2.left) * _speedConversionFactor;               
             }
             else if (Input.GetKey(_moveLeft) && Input.GetKey(_moveDown))
             {
-                _currentAnimation = _animationRunWithGun;
+                _currentAnimation = _currentRun;
                 _currentSpeed = _maxSpeed;                
                 _currentDirection = (Vector2.down + Vector2.left) * _speedConversionFactor;                
             }
             else if (Input.GetKey(_moveDown) && Input.GetKey(_moveRight))
             {
-                _currentAnimation = _animationRunWithGun;
+                _currentAnimation = _currentRun;
                 _currentSpeed = _maxSpeed;                
                 _currentDirection = (Vector2.down + Vector2.right) * _speedConversionFactor;                
             }
             else if (Input.GetKey(_moveRight))
             {
-                _currentAnimation = _animationRunWithGun;
+                _currentAnimation = _currentRun;
                 _currentSpeed = _maxSpeed;               
                 _currentDirection = Vector2.right;
             }
             else if (Input.GetKey(_moveLeft))
             {
-                _currentAnimation = _animationRunWithGun;
+                _currentAnimation = _currentRun;
                 _currentSpeed = _maxSpeed;                
                 _currentDirection = Vector2.left;
             }
             else if (Input.GetKey(_moveUp))
             {
-                _currentAnimation = _animationRunWithGun;
+                _currentAnimation = _currentRun;
                 _currentSpeed = _maxSpeed;
                 _currentDirection = Vector2.up;
             }
             else if (Input.GetKey(_moveDown))
             {
-                _currentAnimation = _animationRunWithGun;
+                _currentAnimation = _currentRun;
                 _currentSpeed = _maxSpeed;
                 _currentDirection = Vector2.down;
             }
 
+            if (_currentSpeed <= 0.1f)
+            {
+                _currentSpeed = 0;
+                _currentAnimation = _currentIdle;
+            }
+
             transform.Translate(_currentDirection * _currentSpeed * Time.deltaTime, Space.World);
+            _currentSpeed = Mathf.Lerp(_currentSpeed, 0, _slowdown * Time.deltaTime);
+            _animator.Play(_currentAnimation);
 
             yield return null;
         }
-    }
-
-    public void StartCorounineSetDirection()
-    {
-        _setMoveCommand = StartCoroutine(Move());
-    }
-
-    public void StopCoroutineSetDirection()
-    {
-        StopCoroutine(_setMoveCommand);
     }
 
     private IEnumerator RestrictMove()
@@ -148,13 +153,15 @@ public class Mover : MonoBehaviour
         }
     }
 
-    public void StartCoroutineMove()
+    public void ChangeSkinsToGun()
     {
-        _move = StartCoroutine(RestrictMove());
+        _currentIdle = _idleGun;
+        _currentRun = _runWithGun;
     }
 
-    public void StopCoroutineMove()
+    public void ChangeSkinsToAxe()
     {
-        StopCoroutine(_move);
+        _currentIdle = _idleAxe;
+        _currentRun = _runWithAxe;
     }
 }

@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &9091847713109734762
+--- !u!1 &8061571697471623819
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,22 +8,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 219453089318662035}
-  - component: {fileID: 1323701867401178577}
+  - component: {fileID: 5787276210037824058}
+  - component: {fileID: 1222248470701814749}
   m_Layer: 0
-  m_Name: Axe
+  m_Name: Gun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &219453089318662035
+--- !u!4 &5787276210037824058
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9091847713109734762}
+  m_GameObject: {fileID: 8061571697471623819}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -9.23474, y: -2.7442222, z: -9.303618}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -31,18 +31,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1323701867401178577
+--- !u!114 &1222248470701814749
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9091847713109734762}
+  m_GameObject: {fileID: 8061571697471623819}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1c8683491ba86c429caa0770091fc71, type: 3}
+  m_Script: {fileID: 11500000, guid: f6b32ca235245487bb15795fd31df128, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _label: Axe
-  _damage: 50
-  _delayBetweenAttacks: 1
+  _label: Gun
+  _damage: 100
+  _durationAttack: 0.3
+  _duretionReload: 0.7
+  _bullet: {fileID: 7457650341311068774, guid: abc4e4465341249e285852a1d9c78c3f, type: 3}

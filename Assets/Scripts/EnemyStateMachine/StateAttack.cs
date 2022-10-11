@@ -25,7 +25,6 @@ public class StateAttack : State
         _animator.Play(_attack);
 
         Target.ApplyDamage(_damage);
-        yield return null;
-        
+        yield return null;        
     }
 }

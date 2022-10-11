@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class Axe : Weapon
 {
-    public override void Shoot(Transform shootPoint, Player player)
+    public override void Attack(Transform shootPoint, Player player)
     {
-        throw new System.NotImplementedException();
+        
+
     }
 }
