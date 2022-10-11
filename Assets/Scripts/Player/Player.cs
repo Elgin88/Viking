@@ -30,7 +30,7 @@ public class Player : MonoBehaviour
     private Coroutine _changeWeaponWork;
     private Coroutine _setDerictionWork;
     private Coroutine _attackWork;
-    private Coroutine _hitWork;    
+    private Coroutine _takeHitWork;    
     private Coroutine _reloadWork;
 
     private Animator _animator;
@@ -120,7 +120,7 @@ public class Player : MonoBehaviour
             if (isShoot == true)
             {
                 isShoot = false;
-                _reloadWork = StartCoroutine(Reloard());
+                _reloadWork = StartCoroutine(Reload());
                 _setDerictionWork = StartCoroutine(SetDirection());
                 _changeWeaponWork = StartCoroutine(ChangeWeapon());
             }
@@ -129,7 +129,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    private IEnumerator Reloard()
+    private IEnumerator Reload()
     {
         bool isReloard = false;
 
@@ -151,7 +151,7 @@ public class Player : MonoBehaviour
 
             else if (isReloard == true)
             {
-                _mover.StartCoroutineMover();
+                _mover.StartCoroutineMove();
                 _setDerictionWork = StartCoroutine(SetDirection());
                 _changeWeaponWork = StartCoroutine(ChangeWeapon());
                 StopCoroutine(_reloadWork);
@@ -216,7 +216,7 @@ public class Player : MonoBehaviour
 
                 _setDerictionWork = StartCoroutine(SetDirection());
                 _attackWork = StartCoroutine(Attack());
-                _mover.StartCoroutineMover();
+                _mover.StartCoroutineMove();
                 
                 SetSkin();
             }
@@ -246,12 +246,12 @@ public class Player : MonoBehaviour
 
         ChangedHealth?.Invoke(_currentHealth, _maxHealth);
 
-        if (_hitWork != null)
+        if (_takeHitWork != null)
         {
-            StopCoroutine(_hitWork);
+            StopCoroutine(_takeHitWork);
         }
         
-        _hitWork = StartCoroutine(TakeHit());
+        _takeHitWork = StartCoroutine(TakeHit());
 
         if (_currentHealth == 0)
         {
@@ -327,8 +327,8 @@ public class Player : MonoBehaviour
                 _setDerictionWork = StartCoroutine(SetDirection());
                 _attackWork = StartCoroutine(Attack());
                 _changeWeaponWork = StartCoroutine(ChangeWeapon());
-                _mover.StartCoroutineMover();
-                StopCoroutine(_hitWork);
+                _mover.StartCoroutineMove();
+                StopCoroutine(_takeHitWork);
             }
 
             yield return null;
@@ -356,286 +356,27 @@ public class Player : MonoBehaviour
     }
 
 
-    //private void StartCoroutines()
-    //{
+    private void StartAllCoroutinesInPlayer()
+    {
+        _mover.StartCoroutineMove();
 
-    //    _changeWeaponWork = StartCoroutine(ChangeWeapon());
-    //    _setDerictionWork;
-    //     _attackWork;
-    //    _hitWork;
-    //    _reloadWork;
+        _blockQuaternionWork = StartCoroutine(BlockQuaternion());
+        _changeWeaponWork = StartCoroutine(ChangeWeapon());
+        _setDerictionWork = StartCoroutine(SetDirection());
+        _attackWork = StartCoroutine(Attack());
+        _takeHitWork = StartCoroutine(TakeHit());
+        _reloadWork = StartCoroutine(Reload());
+    }
 
-    //}
+    private void StopAllCoroutinesInPlayer()
+    {
+        _mover.StopCoroutineMove();
+
+        StopCoroutine(_blockQuaternionWork);
+        StopCoroutine(_changeWeaponWork);
+        StopCoroutine(_setDerictionWork);
+        StopCoroutine(_attackWork);
+        StopCoroutine(_takeHitWork);
+        StopCoroutine(_reloadWork);
+    }
 }
-
-
-
-
-
-//    private Coroutine _blockQuaternionWork;
-//    private Coroutine _changeWeaponWork;
-//    private Coroutine _setDerictionWork;
-//    private Coroutine _attackWork;
-//    private Coroutine _hitWork;
-//    private Coroutine _reloadWork;
-
-
-//    private IEnumerator Attack()
-//    {
-//        bool isShoot = false;
-
-//        _delayBetweenAttacksWork = new WaitForSeconds(_currentWeapon.DelayBetweenAttacks);
-
-//        while (true)
-//        {
-//            if (Input.GetKey(_shoot) & isShoot == false)
-//            {
-//                isShoot = true;
-//                _mover.StopCoroutineMove();
-//                StopCoroutine(_setDerictionWork);
-//                StopCoroutine(_changeWeaponWork);
-
-//                _currentWeapon.Attack(_currentShootPoint, this);
-//                _animator.Play(_currentAttack);
-
-//                yield return _delayBetweenAttacksWork;
-//            }
-
-//            if (isShoot == true)
-//            {
-//                isShoot = false;
-//                _reloadWork = StartCoroutine(Reloard());
-//                _setDerictionWork = StartCoroutine(SetDirection());
-//                _changeWeaponWork = StartCoroutine(ChangeWeapon());
-//            }
-
-//            yield return null;
-//        }
-//    }
-
-//    private IEnumerator Reloard()
-//    {
-//        bool isReloard = false;
-
-//        _duretionReloadWork = new WaitForSeconds(_currentWeapon.DuretionReload);
-
-//        while (true)
-//        {
-//            if (isReloard == false)
-//            {
-//                _mover.StopCoroutineMove();
-//                StopCoroutine(_setDerictionWork);
-//                StopCoroutine(_changeWeaponWork);
-//                StopCoroutine(_attackWork);
-
-//                _animator.Play(_currentReload);
-//                isReloard = true;
-//                yield return _duretionReloadWork;
-//            }
-
-//            else if (isReloard == true)
-//            {
-//                _mover.StartCoroutineMover();
-//                _setDerictionWork = StartCoroutine(SetDirection());
-//                _changeWeaponWork = StartCoroutine(ChangeWeapon());
-//                StopCoroutine(_reloadWork);
-//            }
-
-//            yield return null;
-//        }
-//    }
-
-//    private IEnumerator SetDirection()
-//    {
-//        while (true)
-//        {
-//            _pastAndPresentPositions.Add(new Vector3(transform.position.x, transform.position.y, transform.position.z));
-
-//            if (_pastAndPresentPositions.Count > 2)
-//            {
-//                _pastAndPresentPositions.Remove(_pastAndPresentPositions[0]);
-//            }
-
-//            if (_pastAndPresentPositions[0].x < _pastAndPresentPositions[1].x)
-//            {
-//                TurnRight();
-//            }
-//            else if (_pastAndPresentPositions[0].x > _pastAndPresentPositions[1].x)
-//            {
-//                TurnLeft();
-//            }
-
-//            yield return null;
-//        }
-//    }
-
-//    public IEnumerator ChangeWeapon()
-//    {
-//        bool isWeaponChanged = false;
-
-//        while (true)
-//        {
-//            if (Input.GetKey(_changeWeapon) & isWeaponChanged == false)
-//            {
-//                _mover.StopCoroutineMove();
-//                StopCoroutine(_setDerictionWork);
-//                StopCoroutine(_attackWork);
-
-//                _animator.Play(_currentChangeWeapon);
-//                _currentWeaponNumber++;
-
-//                isWeaponChanged = true;
-
-//                yield return _delayChangeWeaponWork;
-//            }
-
-//            if (isWeaponChanged == true)
-//            {
-//                if (_currentWeaponNumber == _weapons.Count)
-//                {
-//                    _currentWeaponNumber = 0;
-//                }
-
-//                _currentWeapon = _weapons[_currentWeaponNumber];
-
-//                _setDerictionWork = StartCoroutine(SetDirection());
-//                _attackWork = StartCoroutine(Attack());
-//                _mover.StartCoroutineMover();
-
-//                SetSkin();
-//            }
-
-//            yield return null;
-//        }
-//    }
-
-//    private IEnumerator BlockQuaternion()
-//    {
-//        while (true)
-//        {
-//            transform.rotation = _maxQuaterniton;
-//            yield return null;
-//        }
-//    }
-
-//    public Weapon GetCurrentWeapon()
-//    {
-//        return _currentWeapon;
-//    }
-
-//    public void ApplyDamage(int damage)
-//    {
-//        _currentHealth -= damage;
-//        _currentHealth = Mathf.Clamp(_currentHealth, 0, _maxHealth);
-
-//        ChangedHealth?.Invoke(_currentHealth, _maxHealth);
-
-//        if (_hitWork != null)
-//        {
-//            StopCoroutine(_hitWork);
-//        }
-
-//        _hitWork = StartCoroutine(TakeHit());
-
-//        if (_currentHealth == 0)
-//        {
-//            Destroy(gameObject);
-//        }
-//    }
-
-//    public void ApplyHeal(int heal)
-//    {
-//        _currentHealth += heal;
-//        _currentHealth = Mathf.Clamp(_currentHealth, 0, _maxHealth);
-
-//        ChangedHealth?.Invoke(_currentHealth, _maxHealth);
-//    }
-
-//    public void TurnLeft()
-//    {
-//        _isTurnRight = false;
-//        _spriteRenderer.flipX = true;
-
-//        if (_shootPoints[0].position.x < _shootPoints[1].position.x)
-//        {
-//            _currentShootPoint = _shootPoints[0];
-//        }
-//        else
-//        {
-//            _currentShootPoint = _shootPoints[1];
-//        }
-//    }
-
-//    public void TurnRight()
-//    {
-//        _isTurnRight = true;
-//        _spriteRenderer.flipX = false;
-
-//        if (_shootPoints[1].position.x > _shootPoints[0].position.x)
-//        {
-//            _currentShootPoint = _shootPoints[1];
-//        }
-//        else
-//        {
-//            _currentShootPoint = _shootPoints[0];
-//        }
-//    }
-
-//    public void SetPosition(float positionX, float positionY)
-//    {
-//        transform.position = new Vector3(positionX, positionY, transform.position.z);
-//    }
-
-//    private IEnumerator TakeHit()
-//    {
-//        bool takeHit = false;
-
-//        while (true)
-//        {
-//            if (takeHit == false)
-//            {
-//                _mover.StopCoroutineMove();
-//                StopCoroutine(_changeWeaponWork);
-//                StopCoroutine(_setDerictionWork);
-//                StopCoroutine(_attackWork);
-
-//                _animator.Play(_currentTakeHit);
-
-//                takeHit = true;
-
-//                yield return _duretionHitWork;
-//            }
-
-//            if (takeHit == true)
-//            {
-//                _setDerictionWork = StartCoroutine(SetDirection());
-//                _attackWork = StartCoroutine(Attack());
-//                _changeWeaponWork = StartCoroutine(ChangeWeapon());
-//                _mover.StartCoroutineMover();
-//                StopCoroutine(_hitWork);
-//            }
-
-//            yield return null;
-//        }
-//    }
-
-//    private void SetSkin()
-//    {
-//        if (_currentWeapon.TryGetComponent<Gun>(out Gun gun))
-//        {
-//            _mover.ChangeSkinsToGun();
-//            _currentChangeWeapon = _changeGunToAxe;
-//            _currentTakeHit = _takeHitGun;
-//            _currentAttack = _shootGun;
-//            _currentReload = _reloadGun;
-//        }
-//        else if (_currentWeapon.TryGetComponent<Axe>(out Axe axe))
-//        {
-//            _mover.ChangeSkinsToAxe();
-//            _currentChangeWeapon = _changeAxeToGun;
-//            _currentTakeHit = _takeHitAxe;
-//            _currentAttack = _attackAxe;
-//            _currentReload = _reloadAxe;
-//        }
-//    }
-//}

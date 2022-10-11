@@ -51,7 +51,7 @@ public class Mover : MonoBehaviour
         _restrictMoveWork = StartCoroutine(RestrictMove());
     }
 
-    public void StartCoroutineMover()
+    public void StartCoroutineMove()
     {
         _mover = StartCoroutine(Move());
     }
