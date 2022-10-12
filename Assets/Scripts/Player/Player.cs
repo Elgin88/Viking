@@ -8,17 +8,19 @@ using UnityEngine.Events;
 
 public class Player : MonoBehaviour
 {
+    [SerializeField] private Quaternion _maxQuaterniton;
     [SerializeField] private List<Transform> _shootPoints;
     [SerializeField] private List<Weapon> _weapons;
-    [SerializeField] private Quaternion _maxQuaterniton;
     [SerializeField] private float _delayChangeWeapon;
-    [SerializeField] private float _duretionHit;    
+    [SerializeField] private float _duretionHit;
+    [SerializeField] private float _durationDeath;
     [SerializeField] private int _maxHealth;    
 
-    private WaitForSeconds _delayChangeWeaponWork;
     private WaitForSeconds _delayBetweenAttacksWork;
-    private WaitForSeconds _duretionHitWork;
+    private WaitForSeconds _delayChangeWeaponWork;
     private WaitForSeconds _duretionReloadWork;
+    private WaitForSeconds _duretionDeathWork;
+    private WaitForSeconds _duretionHitWork;
 
     private SpriteRenderer _spriteRenderer;
 
@@ -32,6 +34,7 @@ public class Player : MonoBehaviour
     private Coroutine _attackWork;
     private Coroutine _takeHitWork;    
     private Coroutine _reloadWork;
+    private Coroutine _deathWork;
 
     private Animator _animator;
 
@@ -54,11 +57,15 @@ public class Player : MonoBehaviour
     private string _reloadGun = "ReloadGun";
     private string _reloadAxe = "IdleAxe";
 
+    private string _deathGun = "DeathGun";
+    private string _deathAxe = "DeathAxe";
+
 
     private string _currentChangeWeapon;
     private string _currentTakeHit;
     private string _currentAttack;
     private string _currentReload;
+    private string _currentDeath;
 
     private bool _isTurnRight;
 
@@ -84,7 +91,8 @@ public class Player : MonoBehaviour
         _pastAndPresentPositions.Add(new Vector3(0, 0, 0));
         
         _delayChangeWeaponWork = new WaitForSeconds(_delayChangeWeapon);
-        _duretionHitWork = new WaitForSeconds(_duretionHit);       
+        _duretionDeathWork = new WaitForSeconds(_durationDeath);
+        _duretionHitWork = new WaitForSeconds(_duretionHit);
 
         _blockQuaternionWork = StartCoroutine(BlockQuaternion());
 
@@ -92,7 +100,7 @@ public class Player : MonoBehaviour
         _changeWeaponWork = StartCoroutine(ChangeWeapon());
         _attackWork = StartCoroutine(Attack());
 
-        SetSkin();
+        SetSprites();
         TurnRight();
     }
 
@@ -106,23 +114,43 @@ public class Player : MonoBehaviour
         {
             if (Input.GetKey(_shoot) & isShoot == false)
             {
-                isShoot = true;
                 _mover.StopCoroutineMove();
-                StopCoroutine(_setDerictionWork);
-                StopCoroutine(_changeWeaponWork);                
+
+                if (_changeWeaponWork != null)
+                {
+                    StopCoroutine(_changeWeaponWork);
+                    _changeWeaponWork = null;
+                }
+
+                if(_setDerictionWork != null)
+                {
+                    StopCoroutine(_setDerictionWork);
+                    _setDerictionWork = null;
+                }
 
                 _currentWeapon.Attack(_currentShootPoint, this);
-                _animator.Play(_currentAttack);                
+                _animator.Play(_currentAttack);
+
+                isShoot = true;
 
                 yield return _delayBetweenAttacksWork;
             }
 
             if (isShoot == true)
             {
+                _mover.StartCoroutineMove();
+
+                if (_changeWeaponWork == null)
+                {
+                    _changeWeaponWork = StartCoroutine(ChangeWeapon());
+                }
+
+                if (_reloadWork == null)
+                {
+                    _reloadWork = StartCoroutine(Reload());
+                }
+
                 isShoot = false;
-                _reloadWork = StartCoroutine(Reload());
-                _setDerictionWork = StartCoroutine(SetDirection());
-                _changeWeaponWork = StartCoroutine(ChangeWeapon());
             }
 
             yield return null;
@@ -131,57 +159,61 @@ public class Player : MonoBehaviour
 
     private IEnumerator Reload()
     {
-        bool isReloard = false;
+        bool isReload = false;
 
         _duretionReloadWork = new WaitForSeconds(_currentWeapon.DuretionReload);
 
         while (true)
         {
-            if (isReloard == false)
+            if (isReload == false)
             {
                 _mover.StopCoroutineMove();
-                StopCoroutine(_setDerictionWork);
-                StopCoroutine(_changeWeaponWork);
-                StopCoroutine(_attackWork);
+
+                if (_changeWeaponWork != null)
+                {
+                    StopCoroutine(_changeWeaponWork);
+                    _changeWeaponWork = null;
+                }
+
+                if (_attackWork != null)
+                {
+                    StopCoroutine(_attackWork);
+                    _attackWork = null;
+                }                   
 
                 _animator.Play(_currentReload);
-                isReloard = true;
+                isReload = true;
+
                 yield return _duretionReloadWork;
             }
 
-            else if (isReloard == true)
+            else if (isReload == true)
             {
                 _mover.StartCoroutineMove();
-                _setDerictionWork = StartCoroutine(SetDirection());
-                _changeWeaponWork = StartCoroutine(ChangeWeapon());
-                StopCoroutine(_reloadWork);
+
+                if (_setDerictionWork == null)
+                {
+                    _setDerictionWork = StartCoroutine(SetDirection());
+                }
+
+                if (_changeWeaponWork == null)
+                {
+                    _changeWeaponWork = StartCoroutine(ChangeWeapon());
+                }
+
+                if (_attackWork == null)
+                {
+                    _attackWork = StartCoroutine(Attack());
+                }
+
+                if (_reloadWork != null)
+                {
+                    StopCoroutine(_reloadWork);
+                    _reloadWork = null;
+                }
             }
 
             yield return null; 
-        }
-    }
-
-    private IEnumerator SetDirection()
-    {
-        while (true)
-        {
-            _pastAndPresentPositions.Add(new Vector3(transform.position.x, transform.position.y, transform.position.z));
-
-            if (_pastAndPresentPositions.Count > 2)
-            {
-                _pastAndPresentPositions.Remove(_pastAndPresentPositions[0]);
-            }
-
-            if (_pastAndPresentPositions[0].x < _pastAndPresentPositions[1].x)
-            {
-                TurnRight();
-            }
-            else if (_pastAndPresentPositions[0].x > _pastAndPresentPositions[1].x)
-            {
-                TurnLeft();
-            }
-
-            yield return null;
         }
     }
 
@@ -193,13 +225,28 @@ public class Player : MonoBehaviour
         {
             if (Input.GetKey(_changeWeapon) & isWeaponChanged == false)
             {
-                _mover.StopCoroutineMove();                
-                StopCoroutine(_setDerictionWork);                
-                StopCoroutine(_attackWork);
+                _mover.StopCoroutineMove();
+
+                if (_setDerictionWork != null)
+                {
+                    StopCoroutine(_setDerictionWork);
+                    _setDerictionWork = null;
+                }
+
+                if (_attackWork != null)
+                {
+                    StopCoroutine(_attackWork);
+                    _attackWork = null;
+                }
 
                 _animator.Play(_currentChangeWeapon);
                 _currentWeaponNumber++;
-                
+
+                if (_currentWeaponNumber >= _weapons.Count)
+                {
+                    _currentWeaponNumber = 0;
+                }
+
                 isWeaponChanged = true;
 
                 yield return _delayChangeWeaponWork;
@@ -207,18 +254,144 @@ public class Player : MonoBehaviour
 
             if (isWeaponChanged == true)
             {
-                if (_currentWeaponNumber == _weapons.Count)
-                {
-                    _currentWeaponNumber = 0;
-                }
-
                 _currentWeapon = _weapons[_currentWeaponNumber];
 
-                _setDerictionWork = StartCoroutine(SetDirection());
-                _attackWork = StartCoroutine(Attack());
                 _mover.StartCoroutineMove();
-                
-                SetSkin();
+
+                if (_setDerictionWork == null)
+                    _setDerictionWork = StartCoroutine(SetDirection());
+
+                if (_attackWork == null)
+                    _attackWork = StartCoroutine(Attack());
+
+                SetSprites();
+                isWeaponChanged = false;
+            }
+
+            yield return null;
+        }
+    }
+
+
+
+    private IEnumerator TakeHit()
+    {
+        bool takeHit = false;
+
+        while (true)
+        {
+            if (takeHit == false)
+            {
+                _mover.StopCoroutineMove();
+
+                if (_setDerictionWork != null)
+                {
+                    StopCoroutine(_setDerictionWork);
+                    _setDerictionWork = null;
+                }
+
+                if (_attackWork!=null)
+                {
+                    StopCoroutine(_attackWork);
+                    _attackWork = null;
+                }
+
+                if (_changeWeaponWork != null)
+                {
+                    StopCoroutine(_changeWeaponWork);
+                    _changeWeaponWork = null;
+                }                                   
+
+                if (_reloadWork != null)
+                {
+                    StopCoroutine(_reloadWork);
+                    _reloadWork = null;
+                }                                  
+
+                _animator.Play(_currentTakeHit);
+
+                takeHit = true;
+
+                yield return _duretionHitWork;
+            }
+
+            if (takeHit == true)
+            {
+                _mover.StartCoroutineMove();
+
+                if (_changeWeaponWork == null)
+                    _changeWeaponWork = StartCoroutine(ChangeWeapon());
+
+                if (_setDerictionWork == null)
+                    _setDerictionWork = StartCoroutine(SetDirection());
+
+                if (_attackWork == null)
+                    _attackWork = StartCoroutine(Attack());
+
+                if (_takeHitWork != null)
+                    StopCoroutine(_takeHitWork);
+            }
+
+            yield return null;
+        }
+    }
+
+    private IEnumerator SetDirection()
+    {
+        while (true)
+        {
+            _pastAndPresentPositions.Add(new Vector3(transform.position.x, transform.position.y, transform.position.z));
+
+            if (_pastAndPresentPositions.Count > 2)
+                _pastAndPresentPositions.Remove(_pastAndPresentPositions[0]);
+
+            if (_pastAndPresentPositions[0].x < _pastAndPresentPositions[1].x)
+                TurnRight();
+
+            else if (_pastAndPresentPositions[0].x > _pastAndPresentPositions[1].x)
+                TurnLeft();
+
+            yield return null;
+        }
+    }
+
+    private IEnumerator Death()
+    {
+        bool isDeath = false;
+
+        while (true)
+        {
+            if (isDeath == false)
+            {
+                _mover.StopCoroutineMove();
+
+                if (_changeWeaponWork != null)
+                {
+                    StopCoroutine(_changeWeaponWork);
+                    _changeWeaponWork = null;
+                }
+
+                if (_setDerictionWork != null)
+                {
+                    StopCoroutine(_setDerictionWork);
+                    _setDerictionWork = null;
+                }
+
+                if (_attackWork != null)
+                {
+                    StopCoroutine(_attackWork);
+                    _attackWork = null;
+                }
+
+                _animator.Play(_currentDeath);
+                isDeath = true;
+
+                yield return _duretionDeathWork;
+            }
+            else if (isDeath == true)
+            {
+                Destroy(gameObject);
+                StopCoroutine(_deathWork);
             }
 
             yield return null;
@@ -249,13 +422,18 @@ public class Player : MonoBehaviour
         if (_takeHitWork != null)
         {
             StopCoroutine(_takeHitWork);
-        }
-        
-        _takeHitWork = StartCoroutine(TakeHit());
+            _takeHitWork = null;
+        }                  
+
+        if (_currentHealth > 0)
+            _takeHitWork = StartCoroutine(TakeHit());        
 
         if (_currentHealth == 0)
         {
-            Destroy(gameObject);
+            if (_deathWork == null)
+            {
+                _deathWork = StartCoroutine(Death());
+            }
         }
     }
 
@@ -263,7 +441,6 @@ public class Player : MonoBehaviour
     {
         _currentHealth += heal;
         _currentHealth = Mathf.Clamp(_currentHealth, 0, _maxHealth);
-
         ChangedHealth?.Invoke(_currentHealth, _maxHealth);
     }
 
@@ -300,42 +477,9 @@ public class Player : MonoBehaviour
     public void SetPosition(float positionX,float positionY)
     {
         transform.position = new Vector3(positionX, positionY, transform.position.z);
-    }
+    }   
 
-    private IEnumerator TakeHit()
-    {
-        bool takeHit = false;
-
-        while (true)
-        {
-            if (takeHit == false)
-            {
-                _mover.StopCoroutineMove();
-                StopCoroutine(_changeWeaponWork);
-                StopCoroutine(_setDerictionWork);
-                StopCoroutine(_attackWork);
-
-                _animator.Play(_currentTakeHit);
-
-                takeHit = true;
-
-                yield return _duretionHitWork;
-            }
-
-            if (takeHit == true)
-            {
-                _setDerictionWork = StartCoroutine(SetDirection());
-                _attackWork = StartCoroutine(Attack());
-                _changeWeaponWork = StartCoroutine(ChangeWeapon());
-                _mover.StartCoroutineMove();
-                StopCoroutine(_takeHitWork);
-            }
-
-            yield return null;
-        }        
-    }
-
-    private void SetSkin()
+    private void SetSprites()
     {
         if (_currentWeapon.TryGetComponent<Gun>(out Gun gun))
         {
@@ -344,6 +488,7 @@ public class Player : MonoBehaviour
             _currentTakeHit = _takeHitGun;
             _currentAttack = _shootGun;
             _currentReload = _reloadGun;
+            _currentDeath = _deathGun;
         }
         else if (_currentWeapon.TryGetComponent<Axe>(out Axe axe))
         {
@@ -352,13 +497,14 @@ public class Player : MonoBehaviour
             _currentTakeHit = _takeHitAxe;
             _currentAttack = _attackAxe;
             _currentReload = _reloadAxe;
+            _currentDeath = _deathAxe;
         }
     }
 
-
-    private void StartAllCoroutinesInPlayer()
+    private void StartAndStopCoroutinesPlayer()
     {
         _mover.StartCoroutineMove();
+        _mover.StopCoroutineMove();
 
         _blockQuaternionWork = StartCoroutine(BlockQuaternion());
         _changeWeaponWork = StartCoroutine(ChangeWeapon());
@@ -366,17 +512,48 @@ public class Player : MonoBehaviour
         _attackWork = StartCoroutine(Attack());
         _takeHitWork = StartCoroutine(TakeHit());
         _reloadWork = StartCoroutine(Reload());
-    }
+        _deathWork = StartCoroutine(Death());        
 
-    private void StopAllCoroutinesInPlayer()
-    {
-        _mover.StopCoroutineMove();
+        if (_blockQuaternionWork != null)
+        {
+            StopCoroutine(_blockQuaternionWork);
+            _blockQuaternionWork = null;
+        }
 
-        StopCoroutine(_blockQuaternionWork);
-        StopCoroutine(_changeWeaponWork);
-        StopCoroutine(_setDerictionWork);
-        StopCoroutine(_attackWork);
-        StopCoroutine(_takeHitWork);
-        StopCoroutine(_reloadWork);
+        if (_changeWeaponWork != null)
+        {
+            StopCoroutine(_changeWeaponWork);
+            _changeWeaponWork = null;
+        }
+
+        if (_setDerictionWork != null)
+        {
+            StopCoroutine(_setDerictionWork);
+            _setDerictionWork = null;
+        }
+
+        if (_attackWork != null)
+        {
+            StopCoroutine(_attackWork);
+            _attackWork = null;
+        }
+
+        if (_takeHitWork != null)
+        {
+            StopCoroutine(_takeHitWork);
+            _takeHitWork = null;
+        }
+
+        if (_reloadWork != null)
+        {
+            StopCoroutine(_reloadWork);
+            _reloadWork = null;
+        }
+
+        if (_deathWork != null)
+        {
+            StopCoroutine(_deathWork);
+            _deathWork = null;
+        }
     }
 }
