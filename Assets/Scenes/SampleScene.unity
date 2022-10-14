@@ -1322,6 +1322,7 @@ GameObject:
   - component: {fileID: 1541868189}
   - component: {fileID: 1541868191}
   - component: {fileID: 1541868190}
+  - component: {fileID: 1541868192}
   m_Layer: 5
   m_Name: NumberBullets
   m_TagString: Untagged
@@ -1387,6 +1388,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1541868188}
   m_CullTransparentMesh: 1
+--- !u!114 &1541868192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1541868188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ee35787f4b3a4cc88e5d24d38e72962, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _player: {fileID: 556773439}
+  _numberBullets: {fileID: 583446067}
 --- !u!1 &1581129095
 GameObject:
   m_ObjectHideFlags: 0
@@ -1921,7 +1936,7 @@ GameObject:
   - component: {fileID: 2041113089}
   - component: {fileID: 2041113091}
   - component: {fileID: 2041113090}
-  - component: {fileID: 2041113092}
+  - component: {fileID: 2041113093}
   m_Layer: 5
   m_Name: NumberKills
   m_TagString: Untagged
@@ -1987,7 +2002,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2041113088}
   m_CullTransparentMesh: 1
---- !u!114 &2041113092
+--- !u!114 &2041113093
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1996,11 +2011,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 2041113088}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e1793f013a9b14987819ad6c6c61f014, type: 3}
+  m_Script: {fileID: 11500000, guid: 2ee35787f4b3a4cc88e5d24d38e72962, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _player: {fileID: 556773439}
-  _numberKills: {fileID: 23434137}
+  _numberBullets: {fileID: 23434137}
 --- !u!1 &2107254446
 GameObject:
   m_ObjectHideFlags: 0
