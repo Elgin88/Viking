@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+
 public abstract class Weapon : MonoBehaviour
 
 {
@@ -14,5 +16,6 @@ public abstract class Weapon : MonoBehaviour
     public float DelayBetweenAttacks => _durationAttack;
     public float DuretionReload => _duretionReload;
 
-    public abstract void Attack(Transform shootPoint, Player player);    
+    public abstract void Attack(Transform shootPoint, Player player);
+
 }

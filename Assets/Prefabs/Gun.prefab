@@ -48,3 +48,4 @@ MonoBehaviour:
   _durationAttack: 0.2
   _duretionReload: 0.5
   _bullet: {fileID: 7457650341311068774, guid: abc4e4465341249e285852a1d9c78c3f, type: 3}
+  _numberBullets: 10

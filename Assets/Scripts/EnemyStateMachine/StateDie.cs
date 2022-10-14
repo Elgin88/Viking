@@ -28,10 +28,9 @@ public class StateDie : State
         float duration = 0;
 
         if (_enemy == null)
-        {
-            yield return null;
-        }
+            yield return null;        
 
+        Target.IncreaaseNumberKills();
         _enemy.StopSetDirection();
 
         while (true)
@@ -43,6 +42,7 @@ public class StateDie : State
 
             if (duration > _duration)
             {
+                
                 Destroy(gameObject);           
             }
 

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(SpriteRenderer))]
 
@@ -11,20 +12,15 @@ public abstract class Enemy : MonoBehaviour
     [SerializeField] private float _delayDirection;
 
     private SpriteRenderer _spriteRenderer;
-
+    private WaitForSeconds _delayBetweenDirection;
     private List<Vector3> _pastAndPresentPositions;
-
-    private int _currentHealth;
-
     private Coroutine _setDirectionWork;
     private Coroutine _blockQuaternionWork;
-
-    private WaitForSeconds _delayBetweenDirection;
+    private int _currentHealth;
 
     public Transform StartPoint { get; private set; }
-
-    public Player Player { get; private set; }
-
+    public event UnityAction IsAttacked;
+    public Player Target { get; private set; }
     public int CurrentHealth => _currentHealth;
 
     private void Start()
@@ -88,6 +84,9 @@ public abstract class Enemy : MonoBehaviour
     {
         _currentHealth -= damage;
         _currentHealth = Mathf.Clamp(_currentHealth, 0, _maxHealth);
+        
+        if (_currentHealth > 0)
+            IsAttacked?.Invoke();
     }
 
     public void TurnLeft()
@@ -102,17 +101,11 @@ public abstract class Enemy : MonoBehaviour
 
     public void InitTarget(Player player)
     {
-        Player = player;
+        Target = player;
     }
 
     public void InitStartPoint(Transform startPoint)
     {
         StartPoint = startPoint;
-    }
-
-    public void Die()
-    {
-        
-        Destroy(gameObject);
-    }
+    }   
 }

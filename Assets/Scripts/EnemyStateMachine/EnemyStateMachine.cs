@@ -13,7 +13,7 @@ public class EnemyStateMachine : MonoBehaviour
 
     private void Start()
     {
-        _target = GetComponent<Enemy>().Player;
+        _target = GetComponent<Enemy>().Target;
         _startPoint = GetComponent<Enemy>().StartPoint;
 
         SetState(_startState);

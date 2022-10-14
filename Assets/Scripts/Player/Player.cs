@@ -14,7 +14,8 @@ public class Player : MonoBehaviour
     [SerializeField] private float _delayChangeWeapon;
     [SerializeField] private float _duretionHit;
     [SerializeField] private float _durationDeath;
-    [SerializeField] private int _maxHealth;    
+    [SerializeField] private int _maxHealth;
+    [SerializeField] private int _maxNumberBullets;
 
     private WaitForSeconds _delayBetweenAttacksWork;
     private WaitForSeconds _delayChangeWeaponWork;
@@ -41,6 +42,8 @@ public class Player : MonoBehaviour
     private Weapon _currentWeapon;
 
     private Mover _mover;
+
+    private Gun _currentGun;
 
     private KeyCode _changeWeapon = KeyCode.L;
     private KeyCode _shoot = KeyCode.K;
@@ -71,17 +74,23 @@ public class Player : MonoBehaviour
 
     private int _currentWeaponNumber;
     private int _currentHealth;
+    private int _currentNumberKills;
+    private int _currentNumberBullets;
 
     public bool IsTurnRight => _isTurnRight;
+    public int CurrentNumberBullets => _currentNumberBullets;
 
     public Weapon CurrentWeapon => _currentWeapon;
+    public Gun CurrentGun => _currentGun;
 
     public event UnityAction <int, int> ChangedHealth;
+    public event UnityAction<int> ChangedNumberKills;
 
     private void Start()
     {
         _currentWeapon = _weapons[0];
         _currentHealth = _maxHealth;
+        _currentNumberKills = 0;
 
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _animator = GetComponent<Animator>();
@@ -99,6 +108,12 @@ public class Player : MonoBehaviour
         _setDerictionWork = StartCoroutine(SetDirection());
         _changeWeaponWork = StartCoroutine(ChangeWeapon());
         _attackWork = StartCoroutine(Attack());
+
+        for (int i = 0; i < _weapons.Count; i++)
+        {
+            if (_weapons[i].TryGetComponent<Gun>(out Gun gun))
+                _currentGun = gun;            
+        }
 
         SetSprites();
         TurnRight();
@@ -120,12 +135,6 @@ public class Player : MonoBehaviour
                 {
                     StopCoroutine(_changeWeaponWork);
                     _changeWeaponWork = null;
-                }
-
-                if(_setDerictionWork != null)
-                {
-                    StopCoroutine(_setDerictionWork);
-                    _setDerictionWork = null;
                 }
 
                 _currentWeapon.Attack(_currentShootPoint, this);
@@ -271,8 +280,6 @@ public class Player : MonoBehaviour
             yield return null;
         }
     }
-
-
 
     private IEnumerator TakeHit()
     {
@@ -500,6 +507,13 @@ public class Player : MonoBehaviour
             _currentDeath = _deathAxe;
         }
     }
+
+    public void IncreaaseNumberKills()
+    {
+        _currentNumberKills++;
+        ChangedNumberKills?.Invoke(_currentNumberKills);
+    }
+
 
     private void StartAndStopCoroutinesPlayer()
     {

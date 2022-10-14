@@ -10,6 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 219453089318662035}
   - component: {fileID: 1323701867401178577}
+  - component: {fileID: 57087434270838405}
+  - component: {fileID: 794570426150175122}
+  - component: {fileID: 7615316267385330778}
   m_Layer: 0
   m_Name: Axe
   m_TagString: Untagged
@@ -45,4 +48,62 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _label: Axe
   _damage: 50
-  _delayBetweenAttacks: 1
+  _durationAttack: 0.5
+  _duretionReload: 0
+  _distanceAttack: 1
+--- !u!95 &57087434270838405
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9091847713109734762}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &794570426150175122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9091847713109734762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 269ffaa925b3444f4b678175317cd683, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxSpeed: 0
+  _slowdown: 0
+  _upLimit: {fileID: 0}
+  _downLimit: {fileID: 0}
+  _leftLimit: {fileID: 0}
+  _rightLimit: {fileID: 0}
+--- !u!114 &7615316267385330778
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9091847713109734762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27a1665a2beb640928c65cb0d04db209, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxQuaterniton: {x: 0, y: 0, z: 0, w: 0}
+  _shootPoints: []
+  _weapons: []
+  _delayChangeWeapon: 0
+  _duretionHit: 0
+  _durationDeath: 0
+  _maxHealth: 0
