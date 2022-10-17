@@ -24,10 +24,11 @@ public class Player : MonoBehaviour
     private WaitForSeconds _duretionHitWork;
 
     private SpriteRenderer _spriteRenderer;
-
     private List<Vector3> _pastAndPresentPositions;
-
     private Transform _currentShootPoint;
+    private Animator _animator;
+    private Weapon _currentWeapon;
+    private Mover _mover;
 
     private Coroutine _blockQuaternionWork;
     private Coroutine _changeWeaponWork;
@@ -37,59 +38,45 @@ public class Player : MonoBehaviour
     private Coroutine _reloadWork;
     private Coroutine _deathWork;
 
-    private Animator _animator;
-
-    private Weapon _currentWeapon;
-
-    private Mover _mover;
-
-    private Weapon _currentGun;
-
     private KeyCode _changeWeapon = KeyCode.L;
     private KeyCode _shoot = KeyCode.K;
 
     private string _changeGunToAxe = "ChangeGunToAxe";
     private string _changeAxeToGun = "ChangeAxeToGun";
-
     private string _takeHitGun = "HitGun";
     private string _takeHitAxe = "HitAxe";
-
     private string _shootGun = "ShootFromGun";
-    private string _attackAxe = "AttackAxe";
-    
+    private string _attackAxe = "AttackAxe";    
     private string _reloadGun = "ReloadGun";
     private string _reloadAxe = "IdleAxe";
-
     private string _deathGun = "DeathGun";
     private string _deathAxe = "DeathAxe";
-
-
     private string _currentChangeWeapon;
     private string _currentTakeHit;
     private string _currentAttack;
     private string _currentReload;
     private string _currentDeath;
 
-    private bool _isTurnRight;
-
     private int _currentWeaponNumber;
     private int _currentHealth;
     private int _currentNumberKills;
+    private int _currentNumberBullets;
+
+    private bool _isTurnRight;
 
     public bool IsTurnRight => _isTurnRight;
-
     public Weapon CurrentWeapon => _currentWeapon;
-    public Weapon CurrentGun => _currentGun;
-
+    public int MaxNumberBullets => _maxNumberBullets;
     public event UnityAction <int, int> ChangedHealth;
     public event UnityAction <int> ChangedNumberKills;
-
+    public event UnityAction<int> ChangedNumberBullets;
 
     private void Start()
     {
         _currentWeapon = _weapons[0];
         _currentHealth = _maxHealth;
         _currentNumberKills = 0;
+        _currentNumberBullets = _maxNumberBullets;
 
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _animator = GetComponent<Animator>();
@@ -130,8 +117,19 @@ public class Player : MonoBehaviour
                     _changeWeaponWork = null;
                 }
 
-                _currentWeapon.Attack(_currentShootPoint, this);
-                _animator.Play(_currentAttack);
+                if (_currentNumberBullets > 0 & _currentWeapon.TryGetComponent<Gun>(out Gun gun))
+                {
+                    _currentNumberBullets--;
+                    ChangedNumberBullets?.Invoke(_currentNumberBullets);
+                    _currentWeapon.Attack(_currentShootPoint, this);
+                    _animator.Play(_currentAttack);
+                }
+
+                else if (_currentWeapon.TryGetComponent<Axe>(out Axe axe))
+                {
+                    _currentWeapon.Attack(_currentShootPoint, this);
+                    _animator.Play(_currentAttack);
+                }
 
                 isShoot = true;
 

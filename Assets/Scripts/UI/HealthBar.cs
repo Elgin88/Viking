@@ -6,14 +6,14 @@ using UnityEngine.UI;
 public class HealthBar : MonoBehaviour
 {
     [SerializeField] private Player _player;
-    [SerializeField] private Slider _slider;
-    [SerializeField] private float _speedOfChange;
+    [SerializeField] private Slider _healthBar;
+    [SerializeField] private float _speedOfChangeValue;
 
-    private Coroutine _valueChangeWork;
+    private Coroutine _changeHealthWork;
 
     private void OnEnable()
     {
-        _player.ChangedHealth += OnHealthChanged;
+        _player.ChangedHealth += OnHealthChanged;        
     }
 
     private void OnDisable()
@@ -23,17 +23,26 @@ public class HealthBar : MonoBehaviour
 
     private void OnHealthChanged(int currentHealth, int maxHealth)
     {
-        if (_valueChangeWork != null)        
-            StopCoroutine(_valueChangeWork);        
+        if (_changeHealthWork != null)
+        {
+            StopCoroutine(_changeHealthWork);
+        }
 
-        _valueChangeWork = StartCoroutine(ChangeHealth(currentHealth, maxHealth));
+        _changeHealthWork = StartCoroutine(ChangeHealth(currentHealth, maxHealth));
     }
 
     private IEnumerator ChangeHealth(int currentHealth, int maxHealth)
     {
         while (true)
         {
-            _slider.value = Mathf.MoveTowards(_slider.value, (float) currentHealth/maxHealth, _speedOfChange * Time.deltaTime);
+            _healthBar.value = Mathf.MoveTowards(_healthBar.value, (float)currentHealth/maxHealth, _speedOfChangeValue * Time.deltaTime);
+
+            if (_healthBar.value == currentHealth)
+            {
+                StopCoroutine(_changeHealthWork);
+                _changeHealthWork = null;
+            }
+
             yield return null;
         }
     }
