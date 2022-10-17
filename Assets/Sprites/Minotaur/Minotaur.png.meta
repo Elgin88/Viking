@@ -167,6 +167,9 @@ TextureImporter:
   - first:
       213: 8564121950446744893
     second: Minotaur_55
+  - first:
+      213: -6220717991362089420
+    second: Minotaur_56
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -1451,6 +1454,27 @@ TextureImporter:
       bones: []
       spriteID: d35f08d0a8fd9d670800000000000000
       internalID: 8564121950446744893
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Minotaur_56
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 1875
+        width: 26
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 43e2bf412f19ba9a0800000000000000
+      internalID: -6220717991362089420
       vertices: []
       indices: 
       edges: []
