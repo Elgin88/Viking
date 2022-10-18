@@ -1,14 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EndGameMenu : MonoBehaviour
 {
     [SerializeField] private GameObject _endGameMenu;
+    [SerializeField] private TMP_Text _numberKills;
+    [SerializeField] private Player _player;
+
+    private string _nameOfGameScene = "SampleScene";
 
     private void OnEnable()
     {
-        Time.timeScale = 0;        
+        Time.timeScale = 1;
+        _numberKills.text = _player.CurrentNumberKills.ToString();
     }
 
     private void OnDisable()
@@ -16,13 +23,13 @@ public class EndGameMenu : MonoBehaviour
         Time.timeScale = 1;
     }
 
-    private void ExitFromGame()
+    public void ExitFromGame()
     {
         Application.Quit();
     }
 
-    private void RepeatGame()
+    public void RepeatGame()
     {
-
+        SceneManager.LoadScene(_nameOfGameScene);
     }
 }

@@ -67,6 +67,8 @@ public class Player : MonoBehaviour
     public bool IsTurnRight => _isTurnRight;
     public Weapon CurrentWeapon => _currentWeapon;
     public int MaxNumberBullets => _maxNumberBullets;
+    public int CurrentNumberKills => _currentNumberKills;
+
     public event UnityAction <int, int> ChangedHealth;
     public event UnityAction <int> ChangedNumberKills;
     public event UnityAction<int> ChangedNumberBullets;
