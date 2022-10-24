@@ -5,6 +5,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(Player))]
+[RequireComponent(typeof(Sounds))]
 
 public class Mover : MonoBehaviour
 {
@@ -19,10 +20,11 @@ public class Mover : MonoBehaviour
 
     private Coroutine _restrictMoveWork;
     private Coroutine _playAnimationWork;
-    private Coroutine _mover;   
+    private Coroutine _moverWork;
+    private Coroutine _playSoundRunWork;
 
     private Animator _animator;
-
+    private Sounds _sounds;
     private Player _player;
 
     private string _runWithGun = "RunGun";
@@ -45,73 +47,102 @@ public class Mover : MonoBehaviour
     private void Start()
     {
         _animator = GetComponent<Animator>();
+        _sounds = GetComponent<Sounds>();
         _player = GetComponent<Player>();
 
-        _mover = StartCoroutine(Move());
+        _moverWork = StartCoroutine(Move());
         _restrictMoveWork = StartCoroutine(RestrictMove());
+        _playSoundRunWork = StartCoroutine(SoundRun());
+    }
+
+    private IEnumerator SoundRun()
+    {
+        _sounds.Run();
+        yield return null;
     }
 
     public void StartCoroutineMove()
     {
-        _mover = StartCoroutine(Move());
+        _moverWork = StartCoroutine(Move());
     }
 
     public void StopCoroutineMove()
     {
-        StopCoroutine(_mover);
+        StopCoroutine(_moverWork);
     }
 
     private IEnumerator Move()
     {
+        _sounds.Run();
+
+        if (_playSoundRunWork == null)
+            _playSoundRunWork = StartCoroutine(SoundRun());
+
         while (true)
         {
             if (Input.GetKey(_moveRight) && Input.GetKey(_moveUp))
             {
                 _currentAnimation = _currentRun;
                 _currentSpeed = _maxSpeed;               
-                _currentDirection = (Vector2.up + Vector2.right) * _speedConversionFactor;                
+                _currentDirection = (Vector2.up + Vector2.right) * _speedConversionFactor;
+
+                yield return null;
             }
             else if (Input.GetKey(_moveLeft) && Input.GetKey(_moveUp))
             {
                 _currentAnimation = _currentRun;
                 _currentSpeed = _maxSpeed;                
-                _currentDirection = (Vector2.up + Vector2.left) * _speedConversionFactor;               
+                _currentDirection = (Vector2.up + Vector2.left) * _speedConversionFactor;
+
+                yield return null;
             }
             else if (Input.GetKey(_moveLeft) && Input.GetKey(_moveDown))
             {
                 _currentAnimation = _currentRun;
                 _currentSpeed = _maxSpeed;                
-                _currentDirection = (Vector2.down + Vector2.left) * _speedConversionFactor;                
+                _currentDirection = (Vector2.down + Vector2.left) * _speedConversionFactor;
+
+                yield return null;
             }
             else if (Input.GetKey(_moveDown) && Input.GetKey(_moveRight))
             {
                 _currentAnimation = _currentRun;
                 _currentSpeed = _maxSpeed;                
-                _currentDirection = (Vector2.down + Vector2.right) * _speedConversionFactor;                
+                _currentDirection = (Vector2.down + Vector2.right) * _speedConversionFactor;
+
+                yield return null;
             }
             else if (Input.GetKey(_moveRight))
             {
                 _currentAnimation = _currentRun;
                 _currentSpeed = _maxSpeed;               
                 _currentDirection = Vector2.right;
+
+                yield return null;
             }
             else if (Input.GetKey(_moveLeft))
             {
                 _currentAnimation = _currentRun;
                 _currentSpeed = _maxSpeed;                
                 _currentDirection = Vector2.left;
+
+                yield return null;
             }
             else if (Input.GetKey(_moveUp))
             {
                 _currentAnimation = _currentRun;
                 _currentSpeed = _maxSpeed;
                 _currentDirection = Vector2.up;
+
+                yield return null;
             }
             else if (Input.GetKey(_moveDown))
             {
                 _currentAnimation = _currentRun;
                 _currentSpeed = _maxSpeed;
                 _currentDirection = Vector2.down;
+
+                yield return null;
             }
 
             if (_currentSpeed <= 0.1f)
@@ -123,6 +154,9 @@ public class Mover : MonoBehaviour
             transform.Translate(_currentDirection * _currentSpeed * Time.deltaTime, Space.World);
             _currentSpeed = Mathf.Lerp(_currentSpeed, 0, _slowdown * Time.deltaTime);
             _animator.Play(_currentAnimation);
+
+            StopCoroutine(_playSoundRunWork);
+            _playSoundRunWork = null;           
 
             yield return null;
         }
