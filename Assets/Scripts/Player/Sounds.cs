@@ -14,22 +14,22 @@ public class Sounds : MonoBehaviour
 
     private AudioSource _audioSourse;
 
-    public void Run()
+    public void PlayRun()
     {
         _run.Play();
     }
 
-    public void AttackGun()
+    public void PlayAttackGun()
     {
         _attackGun.Play();
     }
 
-    public void AttackAxe()
+    public void PlayAttackAxe()
     {
         _attackAxe.Play();
     }
 
-    public void ReloadGun()
+    public void PlayReloadGun()
     {
         _reloadGun.Play();
     }
@@ -39,7 +39,7 @@ public class Sounds : MonoBehaviour
         _applyDamage.Play();
     }
 
-    public void Die()
+    public void PlayDie()
     {
         _die.Play();
     }

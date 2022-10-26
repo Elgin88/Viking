@@ -38,6 +38,8 @@ public class Player : MonoBehaviour
     private Coroutine _reloadWork;
     private Coroutine _deathWork;
 
+    private Sounds _sounds;
+
     private KeyCode _changeWeapon = KeyCode.L;
     private KeyCode _shoot = KeyCode.K;
 
@@ -82,6 +84,7 @@ public class Player : MonoBehaviour
 
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _animator = GetComponent<Animator>();
+        _sounds = GetComponent<Sounds>();
         _mover = GetComponent<Mover>();
 
         _pastAndPresentPositions = new List<Vector3>();
@@ -125,12 +128,14 @@ public class Player : MonoBehaviour
                     ChangedNumberBullets?.Invoke(_currentNumberBullets);
                     _currentWeapon.Attack(_currentShootPoint, this);
                     _animator.Play(_currentAttack);
+                    _sounds.PlayAttackGun();
                 }
 
                 else if (_currentWeapon.TryGetComponent<Axe>(out Axe axe))
                 {
                     _currentWeapon.Attack(_currentShootPoint, this);
                     _animator.Play(_currentAttack);
+                    _sounds.PlayAttackAxe();
                 }
 
                 isShoot = true;
@@ -184,6 +189,12 @@ public class Player : MonoBehaviour
                 }                   
 
                 _animator.Play(_currentReload);
+
+                if (_currentWeapon.TryGetComponent<Gun>(out Gun gun))
+                {
+                    _sounds.PlayReloadGun();
+                }
+                
                 isReload = true;
 
                 yield return _duretionReloadWork;
@@ -384,6 +395,7 @@ public class Player : MonoBehaviour
                 }
 
                 _animator.Play(_currentDeath);
+                _sounds.PlayDie();
                 isDeath = true;
 
                 yield return _duretionDeathWork;
