@@ -57,7 +57,7 @@ public class Mover : MonoBehaviour
     {
         if (_currentSpeed == 0)
         {
-            //_sounds.PlayRun();
+            _sounds.PlayRun();
         }
     }
 
@@ -132,7 +132,7 @@ public class Mover : MonoBehaviour
 
             transform.Translate(_currentDirection * _currentSpeed * Time.deltaTime, Space.World);
             _currentSpeed = Mathf.Lerp(_currentSpeed, 0, _slowdown * Time.deltaTime);
-            _animator.Play(_currentAnimation);   
+            _animator.Play(_currentAnimation);
 
             yield return null;
         }

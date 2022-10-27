@@ -13,6 +13,7 @@ public class StateDie : State
     private CapsuleCollider2D _collider;
     private Animator _animator;
     private Enemy _enemy;
+    private EnemySounds _enemySounds;
 
     private string _animationDie = "Die";
 
@@ -21,6 +22,7 @@ public class StateDie : State
         _animator = GetComponent<Animator>();
         _enemy = GetComponent<Enemy>();
         _collider = GetComponent<CapsuleCollider2D>();
+        _enemySounds = GetComponent<EnemySounds>();
     }
 
     public override IEnumerator RunState()
@@ -33,16 +35,17 @@ public class StateDie : State
         Target.IncreaaseNumberKills();
         _enemy.StopSetDirection();
 
+        _enemySounds.PlayDieSound();
+
         while (true)
         {
-            _animator.Play(_animationDie);
+            _animator.Play(_animationDie);            
             _collider.enabled = false;
 
             duration += Time.deltaTime;
 
             if (duration > _duration)
             {
-                
                 Destroy(gameObject);           
             }
 

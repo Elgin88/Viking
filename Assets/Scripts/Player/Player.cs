@@ -188,7 +188,7 @@ public class Player : MonoBehaviour
                     _attackWork = null;
                 }                   
 
-                _animator.Play(_currentReload);
+                _animator.Play(_currentReload);                
 
                 if (_currentWeapon.TryGetComponent<Gun>(out Gun gun))
                 {
@@ -253,6 +253,8 @@ public class Player : MonoBehaviour
                 }
 
                 _animator.Play(_currentChangeWeapon);
+                _sounds.PlayChangeWeapon();
+
                 _currentWeaponNumber++;
 
                 if (_currentWeaponNumber >= _weapons.Count)
@@ -320,6 +322,7 @@ public class Player : MonoBehaviour
                 }                                  
 
                 _animator.Play(_currentTakeHit);
+                _sounds.PlayTakeDamage();
 
                 takeHit = true;
 

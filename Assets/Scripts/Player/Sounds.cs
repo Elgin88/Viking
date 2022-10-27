@@ -11,8 +11,7 @@ public class Sounds : MonoBehaviour
     [SerializeField] private AudioSource _reloadGun;
     [SerializeField] private AudioSource _applyDamage;
     [SerializeField] private AudioSource _die;
-
-    private AudioSource _audioSourse;
+    [SerializeField] private AudioSource _changeWeapon;
 
     public void PlayRun()
     {
@@ -34,7 +33,7 @@ public class Sounds : MonoBehaviour
         _reloadGun.Play();
     }
 
-    public void ApplyDamage()
+    public void PlayTakeDamage()
     {
         _applyDamage.Play();
     }
@@ -42,5 +41,10 @@ public class Sounds : MonoBehaviour
     public void PlayDie()
     {
         _die.Play();
+    }
+
+    public void PlayChangeWeapon()
+    {
+        _changeWeapon.Play();
     }
 }

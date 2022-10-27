@@ -18,6 +18,8 @@ public abstract class Enemy : MonoBehaviour
     private Coroutine _blockQuaternionWork;
     private int _currentHealth;
 
+    private EnemySounds _enemySounds;
+
     public Transform StartPoint { get; private set; }
     public event UnityAction IsAttacked;
     public Player Target { get; private set; }
@@ -31,7 +33,7 @@ public abstract class Enemy : MonoBehaviour
         _delayBetweenDirection = new WaitForSeconds(_delayDirection);
 
         _spriteRenderer = GetComponent<SpriteRenderer>();
-       
+        _enemySounds = GetComponent<EnemySounds>();
 
         _pastAndPresentPositions.Add(new Vector3 (0,0,0));
 
@@ -84,9 +86,12 @@ public abstract class Enemy : MonoBehaviour
     {
         _currentHealth -= damage;
         _currentHealth = Mathf.Clamp(_currentHealth, 0, _maxHealth);
+        _enemySounds.PlayTakeHit();
         
         if (_currentHealth > 0)
             IsAttacked?.Invoke();
+
+
     }
 
     public void TurnLeft()
