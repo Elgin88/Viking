@@ -16,6 +16,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float _durationDeath;
     [SerializeField] private int _maxHealth;
     [SerializeField] private int _maxNumberBullets;
+    [SerializeField] private UnityEvent _isDamaged;
 
     private WaitForSeconds _delayBetweenAttacksWork;
     private WaitForSeconds _delayChangeWeaponWork;
@@ -70,8 +71,10 @@ public class Player : MonoBehaviour
     public int MaxNumberBullets => _maxNumberBullets;
     public int CurrentNumberKills => _currentNumberKills;
 
-    private KeyCode _moveLeft = KeyCode.A;
+    private KeyCode _moveUp = KeyCode.W;
+    private KeyCode _moveDown = KeyCode.S;
     private KeyCode _moveRight = KeyCode.D;
+    private KeyCode _moveLeft = KeyCode.A;
 
     public event UnityAction <int, int> ChangedHealth;
     public event UnityAction <int> ChangedNumberKills;
@@ -321,7 +324,7 @@ public class Player : MonoBehaviour
                 }                                  
 
                 _animator.Play(_currentTakeHit);
-                _sounds.PlayTakeDamage();
+                _sounds.PlayTakeDamage();               
 
                 takeHit = true;
 
@@ -353,11 +356,17 @@ public class Player : MonoBehaviour
     {
         while (true)
         {
-            if (Input.GetKeyDown(_moveRight))
+            if (Input.GetKeyDown(_moveRight) | (Input.GetKeyDown(_moveRight) & Input.GetKeyDown(_moveUp))
+                | (Input.GetKeyDown(_moveRight) & Input.GetKeyDown(_moveDown)))
+            {
                 TurnRight();
+            }
 
-            else if (Input.GetKeyDown(_moveLeft))
+            else if (Input.GetKeyDown(_moveLeft) | (Input.GetKeyDown(_moveLeft) & Input.GetKeyDown(_moveUp))
+                | (Input.GetKeyDown(_moveLeft) & Input.GetKeyDown(_moveDown)))
+            {
                 TurnLeft();
+            }
 
             yield return null;
         }
@@ -424,6 +433,7 @@ public class Player : MonoBehaviour
     public void ApplyDamage(int damage)
     {
         _currentHealth -= damage;
+        _isDamaged?.Invoke();
         _currentHealth = Mathf.Clamp(_currentHealth, 0, _maxHealth);
 
         ChangedHealth?.Invoke(_currentHealth, _maxHealth);
