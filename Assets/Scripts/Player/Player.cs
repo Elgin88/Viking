@@ -24,7 +24,6 @@ public class Player : MonoBehaviour
     private WaitForSeconds _duretionHitWork;
 
     private SpriteRenderer _spriteRenderer;
-    private List<Vector3> _pastAndPresentPositions;
     private Transform _currentShootPoint;
     private Animator _animator;
     private Weapon _currentWeapon;
@@ -71,6 +70,9 @@ public class Player : MonoBehaviour
     public int MaxNumberBullets => _maxNumberBullets;
     public int CurrentNumberKills => _currentNumberKills;
 
+    private KeyCode _moveLeft = KeyCode.A;
+    private KeyCode _moveRight = KeyCode.D;
+
     public event UnityAction <int, int> ChangedHealth;
     public event UnityAction <int> ChangedNumberKills;
     public event UnityAction<int> ChangedNumberBullets;
@@ -87,9 +89,6 @@ public class Player : MonoBehaviour
         _sounds = GetComponent<Sounds>();
         _mover = GetComponent<Mover>();
 
-        _pastAndPresentPositions = new List<Vector3>();
-        _pastAndPresentPositions.Add(new Vector3(0, 0, 0));
-        
         _delayChangeWeaponWork = new WaitForSeconds(_delayChangeWeapon);
         _duretionDeathWork = new WaitForSeconds(_durationDeath);
         _duretionHitWork = new WaitForSeconds(_duretionHit);
@@ -354,15 +353,10 @@ public class Player : MonoBehaviour
     {
         while (true)
         {
-            _pastAndPresentPositions.Add(new Vector3(transform.position.x, transform.position.y, transform.position.z));
-
-            if (_pastAndPresentPositions.Count > 2)
-                _pastAndPresentPositions.Remove(_pastAndPresentPositions[0]);
-
-            if (_pastAndPresentPositions[0].x < _pastAndPresentPositions[1].x)
+            if (Input.GetKeyDown(_moveRight))
                 TurnRight();
 
-            else if (_pastAndPresentPositions[0].x > _pastAndPresentPositions[1].x)
+            else if (Input.GetKeyDown(_moveLeft))
                 TurnLeft();
 
             yield return null;

@@ -10,6 +10,8 @@ public abstract class Enemy : MonoBehaviour
     [SerializeField] private int _maxHealth;
     [SerializeField] private Quaternion _maxQuaternion;
     [SerializeField] private float _delayDirection;
+    [SerializeField] private UnityEvent _isDamaged;
+
 
     private SpriteRenderer _spriteRenderer;
     private WaitForSeconds _delayBetweenDirection;
@@ -21,9 +23,11 @@ public abstract class Enemy : MonoBehaviour
     private EnemySounds _enemySounds;
 
     public Transform StartPoint { get; private set; }
-    public event UnityAction IsAttacked;
+    
     public Player Target { get; private set; }
     public int CurrentHealth => _currentHealth;
+
+    public event UnityAction IsAttacked;
 
     private void Start()
     {
@@ -87,11 +91,11 @@ public abstract class Enemy : MonoBehaviour
         _currentHealth -= damage;
         _currentHealth = Mathf.Clamp(_currentHealth, 0, _maxHealth);
         _enemySounds.PlayTakeHit();
-        
+
+        _isDamaged?.Invoke();
+
         if (_currentHealth > 0)
             IsAttacked?.Invoke();
-
-
     }
 
     public void TurnLeft()
