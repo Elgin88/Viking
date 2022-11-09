@@ -5,6 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(Enemy))]
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(CapsuleCollider2D))]
+[RequireComponent(typeof(EnemySounds))]
 
 public class StateDie : State
 {

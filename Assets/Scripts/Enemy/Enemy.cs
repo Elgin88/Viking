@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [RequireComponent(typeof(SpriteRenderer))]
+[RequireComponent(typeof(EnemySounds))]
 
 public abstract class Enemy : MonoBehaviour
 {

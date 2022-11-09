@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+[RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(EnemySounds))]
+
 public class StateAttack : State
 {
     [SerializeField] private int _damage;

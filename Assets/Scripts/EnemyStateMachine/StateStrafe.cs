@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(Enemy))]
+
 public class StateStrafe : State
 {
     [SerializeField] private float _speed;

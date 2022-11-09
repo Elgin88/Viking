@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(SpriteRenderer))]
+[RequireComponent(typeof(Sounds))]
 [RequireComponent(typeof(Mover))]
 
 public class Player : MonoBehaviour
