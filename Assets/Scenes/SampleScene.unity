@@ -2810,8 +2810,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 269ffaa925b3444f4b678175317cd683, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxSpeed: 7
-  _slowdown: 15
   _upLimit: {fileID: 269787219}
   _downLimit: {fileID: 1696778199}
   _leftLimit: {fileID: 2107254447}
@@ -2838,6 +2836,8 @@ MonoBehaviour:
   _delayChangeWeapon: 0.5
   _duretionHit: 0.3
   _durationDeath: 3.5
+  _maxSpeed: 10
+  _slowdown: 10
   _maxHealth: 100
   _maxNumberBullets: 10
   _isDamaged:
@@ -7382,7 +7382,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4368817025170613587, guid: 88511960e5de84ee292422ea20c565e1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.195
+      value: 2.19
       objectReference: {fileID: 0}
     - target: {fileID: 4368817025170613587, guid: 88511960e5de84ee292422ea20c565e1, type: 3}
       propertyPath: m_LocalPosition.y

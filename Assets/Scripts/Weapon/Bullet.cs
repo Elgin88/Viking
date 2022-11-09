@@ -36,6 +36,16 @@ public class Bullet : MonoBehaviour
         transform.Translate(Vector2.right * _speed * _direction * Time.deltaTime, Space.Self);
     }
 
+    public void SetDirection(bool isTurnRight)
+    {
+        _isTurnRight = isTurnRight;
+    }
+
+    public void Init(Player player)
+    {
+        _player = player;
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.TryGetComponent<Enemy>(out Enemy enemy))
@@ -48,15 +58,5 @@ public class Bullet : MonoBehaviour
         {
             Destroy(gameObject);
         }
-    }
-
-    public void Init(Player player)
-    {
-        _player = player;
-    }
-
-    public void SetDirection(bool isTurnRight)
-    {
-        _isTurnRight = isTurnRight;
     }
 }
